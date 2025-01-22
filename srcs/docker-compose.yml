@@ -1,0 +1,32 @@
+services:
+
+  postgresql:
+    image: postgresql
+    container_name: postgresql
+    build:
+      context: ./postgreSQL
+      dockerfile: Dockerfile
+    ports:
+      - 5432
+    networks:
+      - mynetwork
+    restart: always
+
+  transcendence:
+    image:  transcendence
+    container_name: transcendence
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - mynetwork
+    restart:  always
+    depends_on:
+      - postgresql
+
+networks:
+  mynetwork:
+    driver: bridge
+    name: mynetwork
