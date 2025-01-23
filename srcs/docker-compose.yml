@@ -6,6 +6,8 @@ services:
     build:
       context: ./postgreSQL
       dockerfile: Dockerfile
+    volumes:
+      - postgresql:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
@@ -18,7 +20,7 @@ services:
       interval: 3s
       timeout: 10s
       retries: 5
-      start_period: 5s
+      start_period: 1s
 
   transcendence:
     image:  transcendence
@@ -36,6 +38,14 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
+
+volumes:
+  postgresql:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/${USERNAME}/data/postgresql'
 
 networks:
   mynetwork:
