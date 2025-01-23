@@ -7,10 +7,18 @@ services:
       context: ./postgreSQL
       dockerfile: Dockerfile
     ports:
-      - 5432
+      - "5432:5432"
     networks:
       - mynetwork
     restart: always
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 5s
 
   transcendence:
     image:  transcendence
@@ -24,7 +32,8 @@ services:
       - mynetwork
     restart:  always
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_healthy
 
 networks:
   mynetwork:
