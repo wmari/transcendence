@@ -8,7 +8,5 @@ WORKDIR /code
 
 EXPOSE 8000
 
-COPY django_script.sh /transcendence
-
-ENTRYPOINT [ "python3", "transcendence/manage.py" ]
+ENTRYPOINT [ "bash", "transcendence/django_script.sh" ]
 CMD [ "runserver", "0.0.0.0:8000" ]
