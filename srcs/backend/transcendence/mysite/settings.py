@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hello_world'
+    'rest_framework',
+    'transcendence_site',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -48,9 +50,27 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',  # Pour ouvrir l'accès à tous (à restreindre plus tard)
+    )
+}
+
 ROOT_URLCONF = 'mysite.urls'
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = [
+    'authorization',
+    'content-type',
+]
 
 TEMPLATES = [
     {
@@ -104,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'hello_world.MyUser'
+AUTH_USER_MODEL = 'transcendence_site.MyUser'
 
 
 # Internationalization
