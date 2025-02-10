@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'transcendence_site',
     'corsheaders',
 ]
@@ -57,6 +58,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',  # Pour ouvrir l'accès à tous (à restreindre plus tard)
@@ -146,6 +148,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -154,3 +157,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
+
+# Optionnel, si tu veux personnaliser où les fichiers statiques sont collectés lors de la production
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Assure-toi que le dossier "static" est inclus
+]
