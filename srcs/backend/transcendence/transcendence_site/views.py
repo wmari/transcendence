@@ -5,7 +5,9 @@ from rest_framework import generics
 from .models import MyUser
 from .serializers import UserSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 # Create your views here.
 
 def transcendence_site(request):
@@ -39,3 +41,9 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 class CustomTokenObtainPairView(TokenObtainPairView):
     # Personnaliser l'obtention du token si nécessaire
     pass
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user(request):
+    user = request.user
+    return Response({"username": user.username, "email": user.email})
