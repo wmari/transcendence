@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class MyUser(AbstractUser):
     email = models.EmailField(unique=True)
     profile_picture = models.ImageField(upload_to='PPicture/', null=True, blank=True)
+    friends = models.ManyToManyField("self", symmetrical=False, blank=True)
 
     def __str__(self):
         return self.username

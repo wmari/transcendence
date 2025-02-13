@@ -5,7 +5,9 @@ from django.conf.urls.static import static
 from .views import register
 from .views import login_page, UserListCreateView, UserDetailView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import get_user
+from .views import get_user, add_friend, remove_friend
+
+
 urlpatterns = [
     path('', views.transcendence_site, name='transcendence_site'),
     path('register/', register, name='register'),
@@ -14,7 +16,9 @@ urlpatterns = [
     path('api/users/<int:pk>/', UserDetailView.as_view(), name='user-detail'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path("api/user/", get_user, name="get_user"),
+    path('api/user/', get_user, name='get_user'),
+    path('api/friends/add/<int:friend_id>/', add_friend, name='add_firend'),
+    path('api/friends/remove/<int:friend_id>/', remove_friend, name='remove_friend'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
