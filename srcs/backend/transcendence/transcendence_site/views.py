@@ -16,22 +16,6 @@ from rest_framework.response import Response
 def transcendence_site(request):
     return render(request, 'transcendence_site.html', {})
 
-def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "User created !")
-            return redirect('login')
-    else:
-        form = UserRegisterForm()
-
-    return render(request, 'register.html', {'form': form})
-
-def login_page(request):
-    return render(request, 'login.html')
-
-
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = MyUser.objects.all()
     serializer_class = UserSerializer

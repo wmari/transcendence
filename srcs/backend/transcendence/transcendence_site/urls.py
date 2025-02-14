@@ -10,8 +10,6 @@ from .views import get_user, add_friend, remove_friend
 
 urlpatterns = [
     path('', views.transcendence_site, name='transcendence_site'),
-    path('register/', register, name='register'),
-    path('login/', login_page, name='login'),
     path('api/users/', UserListCreateView.as_view(), name='user-list-create'),
     path('api/users/<int:pk>/', UserDetailView.as_view(), name='user-detail'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -45,12 +45,13 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         checkLoginStatus();
         navigate("home");
     } else {
-        alert("Identifiants incorrects !");
+      console.error("Erreur : ", error);
+      showError("Identifiants incorrects !");
     }
   })
   .catch(error => {
     console.error("Erreur : ", error);
-    alert("Une erreur est survenue.");
+    showError("Une erreur est survenue lors de la connexion.");
   });
 });
 
@@ -70,8 +71,9 @@ function checkLoginStatus() {
       }
   })
   .then(response => {
-      if (!response.ok) {
-          throw new Error("Token invalide");
+      if (response.status === 401) {
+          refreshToken();
+          throw new Error("Token expiré");
       }
       return response.json();
   })
@@ -104,6 +106,39 @@ function updateUI(isLoggedIn, user = null) {
 // Déconnexion
 function logout() {
   localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
   checkLoginStatus();
   navigate("home");
+}
+
+function refreshToken() {
+  const refresh_token = localStorage.getItem("refresh_token");
+
+  if (!refresh_token) {
+      logout();
+      return;
+  }
+
+  fetch("/api/token/refresh/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh: refresh_token })
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.access) {
+          localStorage.setItem("access_token", data.access);
+          checkLoginStatus(); // Re-vérifie le statut de connexion
+      } else {
+          logout(); // Déconnexion si le refresh token est invalide
+      }
+  })
+  .catch(() => logout());
+}
+
+function showError(message) {
+  const errorDiv = document.getElementById("error-message");
+  errorDiv.textContent = message;
+  errorDiv.style.display = "block";
+  setTimeout(() => errorDiv.style.display = "none", 5000);
 }
