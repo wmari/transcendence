@@ -2,8 +2,7 @@ from django.urls import path
 from transcendence_site import views
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import register
-from .views import login_page, UserListCreateView, UserDetailView
+from .views import UserListCreateView, UserDetailView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import get_user, add_friend, remove_friend
 
