@@ -193,3 +193,30 @@ def logout_view(request):
             return JsonResponse({"error": "Méthode non autorisée."}, status=status.HTTP_405_METHOD_NOT_ALLOWED) #retourner une erreur         
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+#add_friend
+#accept_friend
+
+#oauth42login
+
+#oauth42get_user
+
+#getcsrftoken
+
+#profilview
+
+#generateotp
+#verifyotp
+
+#upload_avatar
+
+#tournament
+
+#checkingame
+
+#checknotingame
+
+
