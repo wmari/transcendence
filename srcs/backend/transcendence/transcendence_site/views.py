@@ -3,14 +3,16 @@ from django.contrib import messages
 from .forms import UserRegisterForm
 from rest_framework import generics
 from .models import MyUser
-from .serializers import UserSerializer, nicknameSerializer, registerSerializer
+from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.core.validators import validate_email #importer la fonction validate_email
 from django.core.exceptions import ValidationError #importer la classe ValidationError
+from django.contrib.auth import authenticate, login, logout #importer les fonctions authenticate et login
 
 # Create your views here.
 
@@ -138,3 +140,56 @@ def register_view(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
+
+@api_view(['POST'])
+def login_view(request):
+    try:
+        serializer = loginSerializer(data=request.data) #créer une instance de loginSerializer avec les données de la requête
+        if serializer.is_valid(): #vérifier si les données sont valides
+            data = serializer.validated_data #récupérer les données validées dans data
+            username = data['username'] #récupérer le username
+            password = data['password'] #récupérer le password
+            user = authenticate(username=username, password=password) #builtin authentifier l'utilisateur
+            if user is not None: #vérifier si l'utilisateur existe
+
+                #if not user.check_2fa: #vérifier si l'utilisateur a activé l'authentification à deux facteurs
+
+                    login(request, user) #builtin connecter l'utilisateur
+                    #user.check_online = True #mettre l'utilisateur en ligne
+                    user.save() #sauvegarder les modifications
+                    #token = AccessToken.for_user(user) #générer un token
+                    #encoded_token = str(token) #encoder le token
+                    user_data = { #créer un dictionnaire avec les données de l'utilisateur
+                        'message': 'Connexion réussie.', #message de succès
+					    'username' : getattr(user, 'username', 'unknown'), #récupérer le username de l'utilisateur
+					    'nickname' : getattr(user, 'nickname', 'unknown'), #récupérer le nickname de l'utilisateur
+					    'email' : getattr(user, 'email', 'unknown'), #récupérer l'email de l'utilisateur
+					    #'jwt_token': encoded_token, #récupérer le token
+                    }
+                    return Response(user_data, status=status.HTTP_200_OK) #retourner les données de l'utilisateur
+                #else:
+                    #generate and save otp code
+                    #send otp code to user
+                    #return Response({"message": "Veuillez entrer le code OTP pour vous connecter."}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Nom d'utilisateur ou mot de passe incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": serializer.errors}, status=status.HTTP_401_BAD_REQUEST) #retourner les erreurs de validation
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def logout_view(request):
+    try:
+        if request.method == 'POST': #vérifier si la méthode est POST
+            if request.user.is_authenticated: #vérifier si l'utilisateur est authentifié
+                #request.user.check_online = False #mettre l'utilisateur hors ligne
+                #request.user.save() #sauvegarder les modifications
+                logout(request) #builtin déconnecter l'utilisateur
+
+            return JsonResponse({"message": "Déconnexion réussie."}, status=status.HTTP_200_OK) #retourner un message de succès
+        else:
+            return JsonResponse({"error": "Méthode non autorisée."}, status=status.HTTP_405_METHOD_NOT_ALLOWED) #retourner une erreur         
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

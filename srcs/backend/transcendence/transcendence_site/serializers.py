@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .models import MyUser
+from django.contrib.auth import login, authenticate
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -37,12 +38,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class   registerSerializer(serializers.Serializer): #class register
-	username = serializers.CharField() #username default required max_length=100
+	username = serializers.CharField() #username 
 	email = serializers.EmailField() #email ensure email format
 	password1 = serializers.CharField(write_only=True) #password1 write only password never return in API responses
 	password2 = serializers.CharField(write_only=True)
 
 
+
+
+class loginSerializer(serializers.Serializer): #class login
+    username = serializers.CharField() #username
+    password = serializers.CharField() #password
 
 
 

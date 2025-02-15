@@ -20,3 +20,7 @@ class MyUser(AbstractUser):
     def __str__(self):
         return self.username 
     
+
+#class UserStats(models.Model):
+
+#class GameStats(models.Model):
