@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/friends/add/<int:friend_id>/', add_friend, name='add_firend'),
     path('api/friends/remove/<int:friend_id>/', remove_friend, name='remove_friend'),
     path('nickname/', views.modif_nickname, name='nickname'),  #path pour modifier le nickname
+    path('register/', views.register_view, name='register'),  #path pour s'enregistrer
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

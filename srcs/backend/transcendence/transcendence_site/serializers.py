@@ -24,6 +24,27 @@ class UserSerializer(serializers.ModelSerializer):
 #class Oauthuserserializer , define login et password 
 #create user en utilisant ces donnees et return le user
 
+#class login
+#class firend
+#class game_stats
+#class tournament_stats
+#class otp
+
+
+
+
+
+
+
+class   registerSerializer(serializers.Serializer): #class register
+	username = serializers.CharField() #username default required max_length=100
+	email = serializers.EmailField() #email ensure email format
+	password1 = serializers.CharField(write_only=True) #password1 write only password never return in API responses
+	password2 = serializers.CharField(write_only=True)
+
+
+
+
 
 
 class nicknameSerializer(serializers.Serializer): #class nickname
