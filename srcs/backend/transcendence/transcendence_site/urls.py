@@ -22,6 +22,8 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),  #path pour se connecter
     path('logout/', views.logout_view, name='logout'),  #path pour se deconnecter
     path('addfriend/', views.add_friend, name='addfriend'),  #path pour ajouter un ami
+    path('get-csrf-token/', views.get_csrf_token, name='csrf_token'), #path pour obtenir le token csrf
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

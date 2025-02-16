@@ -13,6 +13,9 @@ from rest_framework.response import Response
 from django.core.validators import validate_email #importer la fonction validate_email
 from django.core.exceptions import ValidationError #importer la classe ValidationError
 from django.contrib.auth import authenticate, login, logout #importer les fonctions authenticate et login
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie #importer les décorateurs csrf_exempt et ensure_csrf_cookie
+from django.middleware.csrf import get_token #importer la fonction get_token
+from django.http import HttpResponse, JsonResponse #importer les classes HttpResponse et JsonResponse
 
 # Create your views here.
 
@@ -229,7 +232,18 @@ def accept_friend_request(request):
 
 #oauth42get_user
 
-#getcsrftoken
+@ensure_csrf_cookie
+def get_csrf_token(request): #obtenir le token csrf
+    try:
+        csrf_token = get_token(request) #builtin obtenir le token csrf
+        return JsonResponse({"csrftoken": csrf_token}, status=status.HTTP_200_OK) #retourner le token csrf
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
 
 #profilview
 
