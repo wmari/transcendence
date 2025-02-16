@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from .views import UserListCreateView, UserDetailView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import get_user, add_friend, remove_friend
+from . import views
 
 
 urlpatterns = [
