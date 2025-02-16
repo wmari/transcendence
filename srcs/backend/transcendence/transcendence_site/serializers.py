@@ -50,7 +50,8 @@ class loginSerializer(serializers.Serializer): #class login
     username = serializers.CharField() #username
     password = serializers.CharField() #password
 
-
+class friendSerializer(serializers.Serializer): #class friend
+	username = serializers.CharField() 
 
 
 class nicknameSerializer(serializers.Serializer): #class nickname

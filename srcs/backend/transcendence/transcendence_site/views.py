@@ -195,10 +195,35 @@ def logout_view(request):
         return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@api_view(['POST'])
+def add_friend(request):
+    try:
+        serializer = friendSerializer(data=request.data) #créer une instance de friendSerializer avec les données de la requête
+        if serializer.is_valid(): #vérifier si les données sont valides
+
+            friend_data = serializer.validated_data #récupérer les données validées dans friend_data
+            username = friend_data['username'] #récupérer le username
+            if username == request.user.username: #vérifier si l'utilisateur essaie de s'ajouter lui-même
+                return Response({"error": "Vous ne pouvez pas vous ajouter vous-même."}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                user_to_add = MyUser.objects.get(username=username) #récupérer l'utilisateur à ajouter
+                if user_to_add in request.user.friends.all():
+                    return Response({"error": "Cet utilisateur est déjà votre ami."}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    request.user.friends.add(user_to_add) #ajouter l'utilisateur en ami
+                    return Response({"message": "Ami ajouté avec succès."}, status=status.HTTP_200_OK)
+            except MyUser.DoesNotExist: #si l'utilisateur n'existe pas
+                return Response({"error": "Utilisateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
+        else: #si les données ne sont pas valides
+            return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e: #attraper les exceptions
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-#add_friend
-#accept_friend
+@api_view(['POST'])
+def accept_friend_request(request):
+	return Response("accept friend request")
+
 
 #oauth42login
 

@@ -20,6 +20,7 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),  #path pour s'enregistrer
     path('login/', views.login_view, name='login'),  #path pour se connecter
     path('logout/', views.logout_view, name='logout'),  #path pour se deconnecter
+    path('addfriend/', views.add_friend, name='addfriend'),  #path pour ajouter un ami
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
