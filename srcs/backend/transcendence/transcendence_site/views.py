@@ -18,6 +18,8 @@ from django.middleware.csrf import get_token #importer la fonction get_token
 from django.http import HttpResponse, JsonResponse #importer les classes HttpResponse et JsonResponse
 import random #importer le module random
 from .utils import generate_otp_code, send_otp_email #importer les fonctions generate_otp et send_otp_email
+import re #importer le module re
+
 
 
 # Create your views here.
