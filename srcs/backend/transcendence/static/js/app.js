@@ -23,10 +23,11 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
 
-  fetch('/api/token/', {
+  fetch('/login/', {
     method: 'POST',
     headers:{
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      "X-CSRFToken": getCookie("csrftoken"), // Fetch CSRF token from cookies
     },
     body: JSON.stringify({
       username: username,
@@ -54,6 +55,21 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     showError("Une erreur est survenue lors de la connexion.");
   });
 });
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.startsWith(name + "=")) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
+}
 
 // Vérifie si l'utilisateur est connecté
 function checkLoginStatus() {

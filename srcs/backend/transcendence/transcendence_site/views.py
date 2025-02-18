@@ -6,7 +6,7 @@ from .models import MyUser
 from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -168,14 +168,17 @@ def login_view(request):
                     user.save() #sauvegarder les modifications
                     token = AccessToken.for_user(user) #générer un token
                     encoded_token = str(token) #encoder le token
+                    refresh = RefreshToken.for_user(user)
                     user_data = { #créer un dictionnaire avec les données de l'utilisateur
                         'message': 'Connexion réussie.', #message de succès
 					    'username' : getattr(user, 'username', 'unknown'), #récupérer le username de l'utilisateur
 					    'nickname' : getattr(user, 'nickname', 'unknown'), #récupérer le nickname de l'utilisateur
 					    'email' : getattr(user, 'email', 'unknown'), #récupérer l'email de l'utilisateur
-					    'jwt_token': encoded_token, #récupérer le token
+					    'access': encoded_token, #récupérer le token
+                        'refresh': str(refresh),
                     }
                     return Response(user_data, status=status.HTTP_200_OK) #retourner les données de l'utilisateur
+
                 else:
                     otp = generate_otp_code() #générer un code otp
                     user.otp_code = otp #enregistrer le code otp
@@ -189,7 +192,7 @@ def login_view(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+@permission_classes([IsAuthenticated])
 def logout_view(request):
     try:
         if request.method == 'POST': #vérifier si la méthode est POST
