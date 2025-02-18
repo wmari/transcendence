@@ -299,7 +299,15 @@ def uploaddpp(request):
 
 #tournament
 
+
+
+
 #checkingame
+
+
+
+
+
 
 #checknotingame
 
