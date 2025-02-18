@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser
 class MyUser(AbstractUser):
     nickname = models.CharField(max_length=20)  #add nickname max 20character, plusieur personne peuvent avoir le meme nickname
     email = models.EmailField(unique=True)
-    profile_picture = models.ImageField(upload_to='PPicture/', null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='PPicture/', null=True, blank=True) #add profile picture
     friends = models.ManyToManyField("self", blank=True) #symmetrical=False check si on veut vrm cette option
     #check_online = models.BooleanField(default=False) #check si l'utilisateur est en ligne
     #check_ingame = models.BooleanField(default=False) #check si l'utilisateur est en jeu

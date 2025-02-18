@@ -24,7 +24,7 @@ urlpatterns = [
     path('addfriend/', views.add_friend, name='addfriend'),  #path pour ajouter un ami
     path('get-csrf-token/', views.get_csrf_token, name='csrf_token'), #path pour obtenir le token csrf
 	path('check_2fa/', views.check_otp_view, name='check_2fa'), #path pour verifier le code otp 2fa
-
+    path('uploadpp/', views.upload_pp, name='uploadpp'), #path pour upload une photo de profil
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

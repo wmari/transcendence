@@ -284,10 +284,18 @@ def check_otp_view(request):
 
 
 
+def uploaddpp(request):
+    if request.method == 'POST' and request.FILES.get['profile_picture']: #vérifier si la méthode est POST et si un fichier est envoyé
+        user = request.user #récupérer l'utilisateur
+        user.profile_picture = request.FILES.get['profile_picture'] #modifier la photo de profil de l'utilisateur
+        user.save() #sauvegarder les modifications
+        return JsonResponse({"message": "Photo de profil mise à jour avec succès."}, status=status.HTTP_200_OK)
+    else: #si la méthode n'est pas POST ou si aucun fichier n'est envoyé
+        return JsonResponse({"error": "Méthode non autorisée ou Pas d'image envoye"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
-#upload_avatar
+
 
 #tournament
 
