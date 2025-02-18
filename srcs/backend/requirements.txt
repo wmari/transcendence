@@ -7,3 +7,5 @@ django-cors-headers
 django-extensions
 werkzeug
 pyOpenSSL
+oauthlib
+requests_oauthlib

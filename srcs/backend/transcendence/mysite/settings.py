@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'transcendence_site',
     'corsheaders',
+    'oauthlib',
+    'requests_oauthlib',
 ]
 
 MIDDLEWARE = [

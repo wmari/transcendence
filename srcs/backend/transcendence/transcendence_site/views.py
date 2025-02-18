@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie #import
 from django.middleware.csrf import get_token #importer la fonction get_token
 from django.http import HttpResponse, JsonResponse #importer les classes HttpResponse et JsonResponse
 import random #importer le module random
-from .utils import generate_otp, send_otp_email #importer les fonctions generate_otp et send_otp_email
+from .utils import generate_otp_code, send_otp_email #importer les fonctions generate_otp et send_otp_email
 
 
 # Create your views here.
@@ -60,17 +60,17 @@ def get_user(request):
 #         return Response({"error": "Utilisateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
     
 
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def remove_friend(request, friend_id):
-#     user = request.user
-#     try:
-#         friend = MyUser.objects.get(id=friend_id)
-#         user.friends.remove(friend)
-#         return Response({"message": "Ami supprimé avec succès."}, status=status.HTTP_200_OK)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def remove_friend(request, friend_id):
+    user = request.user
+    try:
+        friend = MyUser.objects.get(id=friend_id)
+        user.friends.remove(friend)
+        return Response({"message": "Ami supprimé avec succès."}, status=status.HTTP_200_OK)
 
-#     except MyUser.DoesNotExist:
-#         return Response({"error": "Utilisateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
+    except MyUser.DoesNotExist:
+        return Response({"error": "Utilisateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
 
 
 
@@ -109,7 +109,7 @@ def register_view(request):
 
 
             try:
-                validate_emal(email) #vérifier le format de l'email
+                validate_email(email) #vérifier le format de l'email
             except ValidationError :
                 return Response({"error": "Format d'email invalide."}, status=status.HTTP_400_BAD_REQUEST)
             
@@ -175,7 +175,7 @@ def login_view(request):
                     }
                     return Response(user_data, status=status.HTTP_200_OK) #retourner les données de l'utilisateur
                 else:
-                    otp = generate_otp() #générer un code otp
+                    otp = generate_otp_code() #générer un code otp
                     user.otp_code = otp #enregistrer le code otp
                     user.save() #sauvegarder les modifications
                     send_otp_email(user.email, otp) #envoyer le code otp par email
@@ -283,8 +283,8 @@ def check_otp_view(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
-def uploaddpp(request):
+@api_view(['POST'])
+def uploadpp(request):
     if request.method == 'POST' and request.FILES.get['profile_picture']: #vérifier si la méthode est POST et si un fichier est envoyé
         user = request.user #récupérer l'utilisateur
         user.profile_picture = request.FILES.get['profile_picture'] #modifier la photo de profil de l'utilisateur

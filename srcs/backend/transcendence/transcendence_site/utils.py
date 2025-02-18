@@ -9,9 +9,6 @@ import random
 
 
 
-
-
-
 def generate_otp_code():
     return ''.join(random.choices('0123456789', k=6)) #générer un code otp de 6 chiffres
 
