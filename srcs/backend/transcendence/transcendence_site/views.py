@@ -3,7 +3,7 @@ from django.contrib import messages
 from .forms import UserRegisterForm
 from rest_framework import generics
 from .models import MyUser
-from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer
+from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer, friendSerializer, otpSerializer
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import AccessToken
@@ -185,7 +185,7 @@ def login_view(request):
             else:
                 return Response({"error": "Nom d'utilisateur ou mot de passe incorrect."}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"error": serializer.errors}, status=status.HTTP_401_BAD_REQUEST) #retourner les erreurs de validation
+            return Response({"error": serializer.errors}, status=401) #retourner les erreurs de validation
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
