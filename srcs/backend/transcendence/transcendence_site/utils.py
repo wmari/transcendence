@@ -16,7 +16,7 @@ def generate_otp_code():
     return ''.join(random.choices('0123456789', k=6)) #générer un code otp de 6 chiffres
 
 
-def send_tp_email(email, otp_code):
+def send_otp_email(email, otp_code):
 	subject = 'Transcendence - Two Factor Authentication'
 	message = f'Your OTP code is {otp_code}.'
 	from_email = 'noreply.4.2.1.2.3@gmail.com' 
