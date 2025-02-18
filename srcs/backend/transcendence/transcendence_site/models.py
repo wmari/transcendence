@@ -12,8 +12,8 @@ class MyUser(AbstractUser):
     #check_online = models.BooleanField(default=False) #check si l'utilisateur est en ligne
     #check_ingame = models.BooleanField(default=False) #check si l'utilisateur est en jeu
     #check_oauth
-    #check_2fa
-    #code_otp
+    check_2fa = models.BooleanField(default=False) #check si l'utilisateur a activé l'authentification à 2 facteurs
+    otp_code = models.CharField(max_length=6, blank=True, null=True) #code pour l'authentification à 2 facteurs, peut etre vide
 
 
 

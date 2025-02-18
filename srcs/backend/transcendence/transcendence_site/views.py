@@ -16,6 +16,9 @@ from django.contrib.auth import authenticate, login, logout #importer les foncti
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie #importer les décorateurs csrf_exempt et ensure_csrf_cookie
 from django.middleware.csrf import get_token #importer la fonction get_token
 from django.http import HttpResponse, JsonResponse #importer les classes HttpResponse et JsonResponse
+import random #importer le module random
+from .utils import generate_otp, send_otp_email #importer les fonctions generate_otp et send_otp_email
+
 
 # Create your views here.
 
@@ -156,25 +159,27 @@ def login_view(request):
             user = authenticate(username=username, password=password) #builtin authentifier l'utilisateur
             if user is not None: #vérifier si l'utilisateur existe
 
-                #if not user.check_2fa: #vérifier si l'utilisateur a activé l'authentification à deux facteurs
+                if not user.check_2fa: #vérifier si l'utilisateur a activé l'authentification à deux facteurs
 
                     login(request, user) #builtin connecter l'utilisateur
                     #user.check_online = True #mettre l'utilisateur en ligne
                     user.save() #sauvegarder les modifications
-                    #token = AccessToken.for_user(user) #générer un token
-                    #encoded_token = str(token) #encoder le token
+                    token = AccessToken.for_user(user) #générer un token
+                    encoded_token = str(token) #encoder le token
                     user_data = { #créer un dictionnaire avec les données de l'utilisateur
                         'message': 'Connexion réussie.', #message de succès
 					    'username' : getattr(user, 'username', 'unknown'), #récupérer le username de l'utilisateur
 					    'nickname' : getattr(user, 'nickname', 'unknown'), #récupérer le nickname de l'utilisateur
 					    'email' : getattr(user, 'email', 'unknown'), #récupérer l'email de l'utilisateur
-					    #'jwt_token': encoded_token, #récupérer le token
+					    'jwt_token': encoded_token, #récupérer le token
                     }
                     return Response(user_data, status=status.HTTP_200_OK) #retourner les données de l'utilisateur
-                #else:
-                    #generate and save otp code
-                    #send otp code to user
-                    #return Response({"message": "Veuillez entrer le code OTP pour vous connecter."}, status=status.HTTP_200_OK)
+                else:
+                    otp = generate_otp() #générer un code otp
+                    user.otp_code = otp #enregistrer le code otp
+                    user.save() #sauvegarder les modifications
+                    send_otp_email(user.email, otp) #envoyer le code otp par email
+                    return Response({"message": "Veuillez entrer le code OTP pour vous connecter.", 'username': username}, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Nom d'utilisateur ou mot de passe incorrect."}, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -242,13 +247,45 @@ def get_csrf_token(request): #obtenir le token csrf
 
 
 
-
+def generate_otp():
+    return ''.join(random.choices(string.digits, k=6)) #générer un code otp de 6 chiffres
 
 
 #profilview
 
-#generateotp
-#verifyotp
+
+@api_view(['POST'])
+def check_otp_view(request):
+    try:
+        serializer = otpSerializer(data=request.data) #créer une instance de otpSerializer avec les données de la requête
+        if serializer.is_valid(): #vérifier si les données sont valides
+            otp_data = serializer.validated_data #récupérer les données validées dans otp_data
+            user = MyUser.objects.get(username=otp_data['username']) #récupérer l'utilisateur
+            if user.otp_code == otp_data['otp_code']: #vérifier si le code otp est correct
+                login(request, user) #builtin connecter l'utilisateur
+                #user.check_online = True #mettre l'utilisateur en ligne
+                user.save()
+                token = AccessToken.for_user(user)
+                encoded_token = str(token)
+                user_data = {
+                    'message': 'Connexion réussie.',
+                    'username': getattr(user, 'username', 'unknown'),
+                    'nickname': getattr(user, 'nickname', 'unknown'),
+                    'email': getattr(user, 'email', 'unknown'),
+                    'jwt_token': encoded_token,
+                }
+                return Response(user_data, status=status.HTTP_200_OK) #retourner les données de l'utilisateur
+            else: #si le code otp est incorrect
+                return Response({"error": "Code OTP incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+        else: #si les données ne sont pas valides
+            return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e: #attraper les exceptions
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
 
 #upload_avatar
 

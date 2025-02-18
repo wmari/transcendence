@@ -23,6 +23,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),  #path pour se deconnecter
     path('addfriend/', views.add_friend, name='addfriend'),  #path pour ajouter un ami
     path('get-csrf-token/', views.get_csrf_token, name='csrf_token'), #path pour obtenir le token csrf
+	path('check_2fa/', views.check_otp_view, name='check_2fa'), #path pour verifier le code otp 2fa
 
 ]
 

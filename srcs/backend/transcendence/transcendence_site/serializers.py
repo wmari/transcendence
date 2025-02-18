@@ -56,3 +56,8 @@ class friendSerializer(serializers.Serializer): #class friend
 
 class nicknameSerializer(serializers.Serializer): #class nickname
 	nickname = serializers.CharField()
+      
+
+class otpSerializer(serializers.Serializer):
+    otp_code = serializers.CharField() #otp_code
+    username = serializers.CharField() #username
