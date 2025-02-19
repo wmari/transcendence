@@ -79,6 +79,8 @@ def remove_friend(request, friend_id):
 
 #endpoint a gérer_________________________________________________________________________________________
 
+
+
 @api_view(['POST'])
 def modif_nickname(request):    #modifier le nickname
     try:
@@ -235,9 +237,6 @@ def accept_friend_request(request):
 	return Response("accept friend request")
 
 
-#oauth42login
-
-#oauth42get_user
 
 @ensure_csrf_cookie
 def get_csrf_token(request): #obtenir le token csrf
@@ -253,7 +252,7 @@ def generate_otp():
     return ''.join(random.choices(string.digits, k=6)) #générer un code otp de 6 chiffres
 
 
-#profilview
+
 
 
 @api_view(['POST'])
@@ -298,13 +297,13 @@ def uploadpp(request):
 
 
 
+#profilview
+
+
+
 
 #tournament
 
-
-
-
-#checkingame
 
 
 
@@ -314,3 +313,8 @@ def uploadpp(request):
 #checknotingame
 
 
+
+
+#oauth42login
+
+#oauth42get_user
