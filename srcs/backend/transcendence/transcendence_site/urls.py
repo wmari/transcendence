@@ -25,6 +25,12 @@ urlpatterns = [
     path('api/get-csrf-token/', views.get_csrf_token, name='csrf_token'), #path pour obtenir le token csrf
 	path('api/check_2fa/', views.check_otp_view, name='check_2fa'), #path pour verifier le code otp 2fa
     path('api/uploadpp/', views.uploadpp, name='uploadpp'), #path pour upload une photo de profil
+    path('api/profil/', views.profilView.as_view(), name='profil'), #path afficher le profil
+    path('api/game_end/', views.game_end_view, name='game_end'), #path pour recuperer les donnes de fin de partie
+    path('api/tournament/', views.tournament_view, name='tournament'), #path pour recuperer les donnes de fin de tournoi
+    path('api/ingame/', views.ingame_view, name='ingame'), #mark the user as ingame
+    path('api/not_ingame/', views.not_ingame_view, name='not_ingame'), #mark the user as not ingame
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
