@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+    const profileBtn = document.getElementById("profileBtn");
+    const gameBtn = document.getElementById("gameBtn");
+    const tournamentBtn = document.getElementById("tournamentBtn");
 
     
     loginForm.addEventListener("submit", function (e) {
@@ -68,10 +71,16 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateUI(isLoggedIn) {
         if (isLoggedIn) {
             loginBtn.classList.add("d-none");
-            logoutBtn.classList.remove("d-none");           
+            logoutBtn.classList.remove("d-none");   
+            profileBtn.classList.remove("d-none");
+            gameBtn.classList.remove("d-none");
+            tournamentBtn.classList.remove("d-none");
         } else {
             loginBtn.classList.remove("d-none");
             logoutBtn.classList.add("d-none");
+            profileBtn.classList.add("d-none");
+            gameBtn.classList.add("d-none");
+            tournamentBtn.classList.add("d-none");
         }
     }
 
@@ -82,9 +91,26 @@ document.addEventListener("DOMContentLoaded", function () {
     
     
     logoutBtn.addEventListener("click", function () {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        checkLoginStatus();
+        fetch("/api/logout/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"), // Fetch CSRF token from cookies
+            },
+        })
+        .then(response => {
+            if (!response.ok){
+                throw new Error("probably not connected");
+            }
+            return response.json();
+        })
+        .then(data => {
+                console.log(data.message);
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("refresh_token");
+                checkLoginStatus();
+        })
+        .catch(error => console.error("Error :", error));
     });
     
     function getCookie(name) {

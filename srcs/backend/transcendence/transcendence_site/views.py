@@ -203,7 +203,6 @@ def logout_view(request):
                 request.user.check_online = False #mettre l'utilisateur hors ligne
                 request.user.save() #sauvegarder les modifications
                 logout(request) #builtin déconnecter l'utilisateur
-
             return JsonResponse({"message": "Déconnexion réussie."}, status=status.HTTP_200_OK) #retourner un message de succès
         else:
             return JsonResponse({"error": "Méthode non autorisée."}, status=status.HTTP_405_METHOD_NOT_ALLOWED) #retourner une erreur         
@@ -300,7 +299,7 @@ def uploadpp(request):
 
 
 
-
+@permission_classes([IsAuthenticated])
 class profilView(APIView):
     def get(self, request): #fetch logged in user profil data
         try:

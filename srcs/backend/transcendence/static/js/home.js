@@ -7,6 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.text())
             .then(html => {
                 app.innerHTML = html;
+                const script = document.createElement("script");
+                script.src = `static/js/${page}.js`;
+                script.defer = true;
+                document.body.appendChild(script);
+
             })
             .catch(() => {
                 app.innerHTML = "<p class='text-danger'>Erreur de chargement...</p>";
