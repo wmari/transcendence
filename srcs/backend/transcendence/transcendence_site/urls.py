@@ -17,14 +17,20 @@ urlpatterns = [
     path('api/user/', get_user, name='get_user'),
     path('api/friends/add/<int:friend_id>/', add_friend, name='add_firend'),
     path('api/friends/remove/<int:friend_id>/', remove_friend, name='remove_friend'),
-    path('nickname/', views.modif_nickname, name='nickname'),  #path pour modifier le nickname
-    path('register/', views.register_view, name='register'),  #path pour s'enregistrer
-    path('login/', views.login_view, name='login'),  #path pour se connecter
-    path('logout/', views.logout_view, name='logout'),  #path pour se deconnecter
-    path('addfriend/', views.add_friend, name='addfriend'),  #path pour ajouter un ami
-    path('get-csrf-token/', views.get_csrf_token, name='csrf_token'), #path pour obtenir le token csrf
-	path('check_2fa/', views.check_otp_view, name='check_2fa'), #path pour verifier le code otp 2fa
-    path('uploadpp/', views.uploadpp, name='uploadpp'), #path pour upload une photo de profil
+    path('api/nickname/', views.modif_nickname, name='nickname'),  #path pour modifier le nickname
+    path('api/register/', views.register_view, name='register'),  #path pour s'enregistrer
+    path('api/login/', views.login_view, name='login'),  #path pour se connecter
+    path('api/logout/', views.logout_view, name='logout'),  #path pour se deconnecter
+    path('api/addfriend/', views.add_friend, name='addfriend'),  #path pour ajouter un ami
+    path('api/get-csrf-token/', views.get_csrf_token, name='csrf_token'), #path pour obtenir le token csrf
+	path('api/check_2fa/', views.check_otp_view, name='check_2fa'), #path pour verifier le code otp 2fa
+    path('api/uploadpp/', views.uploadpp, name='uploadpp'), #path pour upload une photo de profil
+    path('api/profil/', views.profilView.as_view(), name='profil'), #path afficher le profil
+    path('api/game_end/', views.game_end_view, name='game_end'), #path pour recuperer les donnes de fin de partie
+    path('api/tournament/', views.tournament_view, name='tournament'), #path pour recuperer les donnes de fin de tournoi
+    path('api/ingame/', views.ingame_view, name='ingame'), #mark the user as ingame
+    path('api/not_ingame/', views.not_ingame_view, name='not_ingame'), #mark the user as not ingame
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

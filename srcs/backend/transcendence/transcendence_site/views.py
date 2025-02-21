@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import UserRegisterForm
 from rest_framework import generics
-from .models import MyUser
-from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer
+from .models import MyUser, UserStats, GameStats
+from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer, friendSerializer, otpSerializer, statsSerializer, tournamentSerializer
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
@@ -18,7 +18,8 @@ from django.middleware.csrf import get_token #importer la fonction get_token
 from django.http import HttpResponse, JsonResponse #importer les classes HttpResponse et JsonResponse
 import random #importer le module random
 from .utils import generate_otp_code, send_otp_email #importer les fonctions generate_otp et send_otp_email
-import re #importer le module re
+import requests, os, re, random, string  #importer les modules
+from rest_framework.views import APIView
 
 
 
@@ -78,6 +79,8 @@ def remove_friend(request, friend_id):
 
 
 #endpoint a gérer_________________________________________________________________________________________
+
+
 
 @api_view(['POST'])
 def modif_nickname(request):    #modifier le nickname
@@ -140,7 +143,7 @@ def register_view(request):
                 return Response({"error": "Cet email existe déjà."}, status=status.HTTP_400_BAD_REQUEST)
 
             user = MyUser.objects.create_user(username=username, email=email, password=password1, nickname=username) #créer un utilisateur
-            #user.stat = Stats.objects.create(user=user) #créer les statistiques de l'utilisateur
+            user.stat = UserStats.objects.create(user=user) #créer les statistiques de l'utilisateur
             return Response({"message": "Utilisateur créé avec succès."}, status=status.HTTP_201_CREATED)
         else:
             return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST) #retourner les erreurs de validation
@@ -164,7 +167,7 @@ def login_view(request):
                 if not user.check_2fa: #vérifier si l'utilisateur a activé l'authentification à deux facteurs
 
                     login(request, user) #builtin connecter l'utilisateur
-                    #user.check_online = True #mettre l'utilisateur en ligne
+                    user.check_online = True #mettre l'utilisateur en ligne
                     user.save() #sauvegarder les modifications
                     token = AccessToken.for_user(user) #générer un token
                     encoded_token = str(token) #encoder le token
@@ -188,7 +191,7 @@ def login_view(request):
             else:
                 return Response({"error": "Nom d'utilisateur ou mot de passe incorrect."}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"error": serializer.errors}, status=status.HTTP_401_BAD_REQUEST) #retourner les erreurs de validation
+            return Response({"error": serializer.errors}, status=401) #retourner les erreurs de validation
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -197,8 +200,8 @@ def logout_view(request):
     try:
         if request.method == 'POST': #vérifier si la méthode est POST
             if request.user.is_authenticated: #vérifier si l'utilisateur est authentifié
-                #request.user.check_online = False #mettre l'utilisateur hors ligne
-                #request.user.save() #sauvegarder les modifications
+                request.user.check_online = False #mettre l'utilisateur hors ligne
+                request.user.save() #sauvegarder les modifications
                 logout(request) #builtin déconnecter l'utilisateur
 
             return JsonResponse({"message": "Déconnexion réussie."}, status=status.HTTP_200_OK) #retourner un message de succès
@@ -238,9 +241,6 @@ def accept_friend_request(request):
 	return Response("accept friend request")
 
 
-#oauth42login
-
-#oauth42get_user
 
 @ensure_csrf_cookie
 def get_csrf_token(request): #obtenir le token csrf
@@ -256,7 +256,7 @@ def generate_otp():
     return ''.join(random.choices(string.digits, k=6)) #générer un code otp de 6 chiffres
 
 
-#profilview
+
 
 
 @api_view(['POST'])
@@ -268,7 +268,7 @@ def check_otp_view(request):
             user = MyUser.objects.get(username=otp_data['username']) #récupérer l'utilisateur
             if user.otp_code == otp_data['otp_code']: #vérifier si le code otp est correct
                 login(request, user) #builtin connecter l'utilisateur
-                #user.check_online = True #mettre l'utilisateur en ligne
+                user.check_online = True #mettre l'utilisateur en ligne
                 user.save()
                 token = AccessToken.for_user(user)
                 encoded_token = str(token)
@@ -301,19 +301,216 @@ def uploadpp(request):
 
 
 
+class profilView(APIView):
+    def get(self, request): #fetch logged in user profil data
+        try:
+            user = request.user #recupere le user logged in 
+            if user is not None: #si le user existe
+                stat = user.stat #recupere les Userstat
+                friend_list = [] #creer une liste friend vide
+                if user.friends.all().count() > 0: #si il a au moins un ami
+                    for friend in user.friends.all(): #ajoute les ami un par un
+                        friend_list.append({
+							'username': friend.username,
+							'nickname': friend.nickname,
+							'ingame': friend.check_ingame,
+							'online': friend.check_online,
+							'profile_picrture': friend.profile_picture.url,
+                        })
+                game_list = []  #liste game vide
+                if user.games.all().count() > 0: #si au moins une game
+                    for game in user.games.all():
+                        if game.opponent == 'Tournament': #si les donnees dun tournoi
+                            game_list.append({
+								'opponent': game.opponent,
+								'win': game.win,
+								'date': game.date,
+                            })
+                        else: #sinon
+                            game_list.append({
+								'opponent': game.opponent,
+								'win': game.win,
+								'my_score': game.my_score,
+								'opponent_score': game.opponent_score,
+								'date': game.date,
+                            })
+                data = { #creer un dictionnaire avec les data du user logged in
+					'nickname': user.nickname,
+					'email': user.email,
+					'profile_picture': user.profile_picture.url,
+					'number_of_game': stat.number_of_game,
+					'number_of_win': stat.number_of_win,
+					'number_of_defeat': stat.number_of_defeat,
+					'win_percentage': stat.win_percentage,
+					'friends': friend_list,
+					'games': game_list,
+				}
+                return JsonResponse({'data': data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-#tournament
+
+    def post(self, request): #fetch another user profile based on username
+        try:
+            try:
+                user = MyUser.objects.get(username=request.data['username']) #recupere le user du username dans la requete
+            except MyUser.DoesNotExist: #si le user nexiste pas
+                return Response({"error": "Utilisateur non existant."}, status=status.HTTP_400_BAD_REQUEST)
+            if user is not None: #si le user existe
+                stat = user.stat #recupere les stat
+                friend_list = [] #fiend liste vide
+                if user.friends.all().count() > 0: #si au moins un ami
+                    for friend in user.friends.all(): #ajoute les amis un par un
+                        friend_list.append({ 
+							'username': friend.username,
+							'nickname': friend.nickname,
+							'ingame': friend.check_ingame,
+							'online': friend.check_online,
+							'profil_image': friend.profil_image.url,
+                        })
+                game_list = []
+                if user.games.all().count() > 0:
+                    for game in user.games.all():
+                        if game.opponent == 'Tournament':
+                            game_list.append({
+								'opponent': game.opponent,
+								'win': game.win,
+								'date': game.date,
+                            })
+                        else:
+                            game_list.append({
+								'opponent': game.opponent,
+								'win': game.win,
+								'my_score': game.my_score,
+								'opponent_score': game.opponent_score,
+								'date': game.date,                               
+                            })
+                data = { #build un dictionnaire avec les donnees du user de la requete
+					'message': 'Other profile',
+					'nickname': user.nickname,
+					'email': user.email,
+					'profile_picture': user.profile_picture.url,
+					'number_of_game': stat.number_of_game,
+					'number_of_win': stat.number_of_win,
+					'number_of_defeat': stat.number_of_defeat,
+					'win_percentage': stat.win_percentage,
+					'friends': friend_list,
+					'games': game_list,
+                }
+                return JsonResponse({'data': data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)            
 
 
 
 
-#checkingame
+@api_view(['POST'])
+def game_end_view(request): #fin de game, recupere les donnees de la partie et les sauvegarde, update les stats du user
+	try:
+		serializer = statsSerializer(data=request.data) #creer une instance stat serializer et recupere les donnees de la requete
+		if serializer.is_valid(): #si le donnees sont valides
+			game_data = serializer.validated_data #game_data recupere les datas
+			user = request.user #recupere le user demandant la requete
+			stat = user.stat #recupere les stats du user
+			stat.number_of_game += 1
+			if game_data['win'] == True:
+				stat.number_of_win += 1
+			else:
+				stat.number_of_defeat += 1
+			stat.win_percentage = stat.number_of_win / user.stat.number_of_game * 100 #calcul le taux de victoire
+			stat.save()
+			user.save()
+			new_game = GameStats.objects.create(user=user, win=game_data['win'], opponent=game_data['opponent'], my_score=game_data['my_score'], opponent_score=game_data['opponent_score']) #creer une nouvelle instance gamestats et recupere les donnes de la partie
+			new_game.save()
+			return Response({'message': 'Data send successfully'}, status=status.HTTP_200_OK)    
+		else:
+			return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+	except Exception as e:
+		return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#The API accepts game data in a POST request.
+#The data is validated using a serializer.
+#The user’s game stats are updated (number of games, wins, defeats, win percentage).
+#A new game record is created and saved.
+#A success message is returned, or if an error occurs, an error message is returned.
+
+
+
+@api_view(['POST'])
+def tournament_view(request):
+	try:
+		serializer = tournamentSerializer(data=request.data)
+		if serializer.is_valid():
+			game_data = serializer.validated_data
+			user = request.user
+			user.stat.number_of_game += 1
+			if game_data['win'] == True:
+				user.stat.number_of_win += 1
+			else:
+				user.stat.number_of_defeat += 1
+			user.stat.win_percentage = user.stat.number_of_win / user.stat.number_of_game * 100
+			user.game = GameStats.objects.create(user=user, win=game_data['win'], opponent=game_data['opponent'])
+			user.save()
+			return Response({'message': 'Data send successfully'}, status=status.HTTP_200_OK)    
+		else:
+			return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+	except Exception as e:
+		return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+#The API receives the result of a tournament game via a POST request.
+#The data is validated using tournamentSerializer.
+#The user's stats (number of games, wins, defeats, win percentage) are updated based on the result.
+#A new game record is created for the user, with the tournament as the opponent.
+#The updated user data is saved to the database.
+#A success message is returned to the client, or an error message is sent if something goes wrong.
+
+
+
+@api_view(['GET'])
+def ingame_view(request):
+	try:
+		user = request.user
+		user.check_ingame = True
+		user.save()
+		return Response(status=status.HTTP_200_OK)
+	except Exception as e:
+		return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+#The view is triggered by a GET request to the ingame_view endpoint.
+#The authenticated user is retrieved from the request.
+#The user's ingame status is set to True.
+#The user object is saved to reflect the change.
+#If successful, a 200 OK response is returned. If any error occurs, a 400 Bad Request response with an error message is returned.
+
+
+
+
+
+@api_view(['GET'])
+def not_ingame_view(request):
+	try:
+		if request.user.is_authenticated:
+			user = request.user
+			user.check_ingame = False
+			user.save()
+		return Response(status=status.HTTP_200_OK)
+	except Exception as e:
+		return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+#The view is triggered by a GET request to the not_ingame_view endpoint.
+#The code checks if the user is authenticated.
+#If authenticated, the user's ingame status is set to False, indicating they are not currently in a game.
+#The updated user object is saved to the database.
+#A 200 OK response is returned if everything is successful. If an error occurs, a 400 Bad Request response with an error message is returned.
 
 
 
 
 
 
-#checknotingame
+#oauth42login
 
-
+#oauth42get_user

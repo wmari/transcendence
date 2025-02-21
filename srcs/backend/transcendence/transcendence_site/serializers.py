@@ -25,14 +25,10 @@ class UserSerializer(serializers.ModelSerializer):
 #class Oauthuserserializer , define login et password 
 #create user en utilisant ces donnees et return le user
 
-#class login
-#class firend
+
+
 #class game_stats
 #class tournament_stats
-#class otp
-
-
-
 
 
 
@@ -61,3 +57,16 @@ class nicknameSerializer(serializers.Serializer): #class nickname
 class otpSerializer(serializers.Serializer):
     otp_code = serializers.CharField() #otp_code
     username = serializers.CharField() #username
+
+
+class statsSerializer(serializers.Serializer):
+	opponent = serializers.CharField()
+	my_score = serializers.CharField()
+	opponent_score = serializers.CharField()
+	win = serializers.BooleanField()
+      
+
+
+class tournamentSerializer(serializers.Serializer):
+	opponent = serializers.CharField()
+	win = serializers.BooleanField()
