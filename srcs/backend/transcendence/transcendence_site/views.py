@@ -289,9 +289,9 @@ def check_otp_view(request):
 
 @api_view(['POST'])
 def uploadpp(request):
-    if request.method == 'POST' and request.FILES.get['profile_picture']: #vérifier si la méthode est POST et si un fichier est envoyé
+    if request.method == 'POST' and request.FILES.get['profil_picture']: #vérifier si la méthode est POST et si un fichier est envoyé
         user = request.user #récupérer l'utilisateur
-        user.profile_picture = request.FILES.get['profile_picture'] #modifier la photo de profil de l'utilisateur
+        user.profil_picture = request.FILES.get['profil_picture'] #modifier la photo de profil de l'utilisateur
         user.save() #sauvegarder les modifications
         return JsonResponse({"message": "Photo de profil mise à jour avec succès."}, status=status.HTTP_200_OK)
     else: #si la méthode n'est pas POST ou si aucun fichier n'est envoyé
@@ -314,7 +314,7 @@ class profilView(APIView):
 							'nickname': friend.nickname,
 							'ingame': friend.check_ingame,
 							'online': friend.check_online,
-							'profile_picrture': friend.profile_picture.url,
+							'profil_picrture': friend.profil_picture.url,
                         })
                 game_list = []  #liste game vide
                 if user.games.all().count() > 0: #si au moins une game
@@ -336,7 +336,7 @@ class profilView(APIView):
                 data = { #creer un dictionnaire avec les data du user logged in
 					'nickname': user.nickname,
 					'email': user.email,
-					'profile_picture': user.profile_picture.url,
+					'profil_picture': user.profil_picture.url,
 					'number_of_game': stat.number_of_game,
 					'number_of_win': stat.number_of_win,
 					'number_of_defeat': stat.number_of_defeat,
@@ -349,7 +349,7 @@ class profilView(APIView):
             return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-    def post(self, request): #fetch another user profile based on username
+    def post(self, request): #fetch another user profil based on username
         try:
             try:
                 user = MyUser.objects.get(username=request.data['username']) #recupere le user du username dans la requete
@@ -385,10 +385,10 @@ class profilView(APIView):
 								'date': game.date,                               
                             })
                 data = { #build un dictionnaire avec les donnees du user de la requete
-					'message': 'Other profile',
+					'message': 'Other profil',
 					'nickname': user.nickname,
 					'email': user.email,
-					'profile_picture': user.profile_picture.url,
+					'profil_picture': user.profil_picture.url,
 					'number_of_game': stat.number_of_game,
 					'number_of_win': stat.number_of_win,
 					'number_of_defeat': stat.number_of_defeat,

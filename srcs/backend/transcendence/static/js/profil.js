@@ -1,5 +1,7 @@
-document.addEventListener("popstate", function () {
-    const token = localStorage.getItem("token");
+document.addEventListener("profilEvent", function (event) {
+    console.log(event.detail.message);
+    const token = localStorage.getItem("access_token");
+
     if (!token) {
         document.getElementById("app").innerHTML = "<p class='text-danger'>Vous devez être connecté pour voir cette page.</p>";
         return;
@@ -9,12 +11,12 @@ document.addEventListener("popstate", function () {
     const emailSpan = document.getElementById("email");
     // const editProfileBtn = document.getElementById("editProfileBtn");
     // const editProfileForm = document.getElementById("editProfileForm");
-    // const profileForm = document.getElementById("profileForm");
+    // const profilForm = document.getElementById("profilForm");
     // const cancelEditBtn = document.getElementById("cancelEdit");
 
     // Charger les infos de l'utilisateur
     function loadProfile() {
-        fetch("/api/profil/", {
+        fetch("/api/user/", {
             headers: { "Authorization": `Bearer ${token}` }
         })
         .then(response => response.json())
@@ -30,7 +32,7 @@ document.addEventListener("popstate", function () {
     }
 
     loadProfile();
-    console.log("profile.js chargé !");
+    console.log("profil.js chargé !");
     // // Activer l'édition du profil
     // editProfileBtn.addEventListener("click", function () {
     //     editProfileForm.classList.remove("d-none");
@@ -42,13 +44,13 @@ document.addEventListener("popstate", function () {
     // });
 
     // // Sauvegarder les modifications
-    // profileForm.addEventListener("submit", function (e) {
+    // profilForm.addEventListener("submit", function (e) {
     //     e.preventDefault();
 
     //     const newUsername = document.getElementById("newUsername").value;
     //     const newEmail = document.getElementById("newEmail").value;
 
-    //     fetch("/api/profile/", {
+    //     fetch("/api/profil/", {
     //         method: "PUT",
     //         headers: {
     //             "Content-Type": "application/json",

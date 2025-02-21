@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-    const profileBtn = document.getElementById("profileBtn");
+    const profilBtn = document.getElementById("profilBtn");
     const gameBtn = document.getElementById("gameBtn");
     const tournamentBtn = document.getElementById("tournamentBtn");
 
@@ -72,13 +72,13 @@ document.addEventListener("DOMContentLoaded", function () {
         if (isLoggedIn) {
             loginBtn.classList.add("d-none");
             logoutBtn.classList.remove("d-none");   
-            profileBtn.classList.remove("d-none");
+            profilBtn.classList.remove("d-none");
             gameBtn.classList.remove("d-none");
             tournamentBtn.classList.remove("d-none");
         } else {
             loginBtn.classList.remove("d-none");
             logoutBtn.classList.add("d-none");
-            profileBtn.classList.add("d-none");
+            profilBtn.classList.add("d-none");
             gameBtn.classList.add("d-none");
             tournamentBtn.classList.add("d-none");
         }

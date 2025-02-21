@@ -4,8 +4,8 @@ from .models import MyUser
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
-    profile_picture = forms.ImageField(required=False)
+    profil_picture = forms.ImageField(required=False)
 
     class Meta:
         model = MyUser
-        fields = ['username', 'email', 'profile_picture', 'password1', 'password2']
+        fields = ['username', 'email', 'profil_picture', 'password1', 'password2']
