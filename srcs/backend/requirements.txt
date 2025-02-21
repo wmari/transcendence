@@ -9,3 +9,4 @@ werkzeug
 pyOpenSSL
 oauthlib
 requests_oauthlib
+python-dotenv

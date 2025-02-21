@@ -11,6 +11,30 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+from datetime import timedelta
+
+
+
+dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+
+
+# CLIENT_ID = os.environ.get("CLIENT_ID")
+# CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER='noreply.4.2.1.2.3@gmail.com'
+EMAIL_HOST_PASSWORD='qyeb ryfn xqfm gqgx'
+
+
+
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
