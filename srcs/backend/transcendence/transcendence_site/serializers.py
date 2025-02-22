@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .models import MyUser
 from django.contrib.auth import login, authenticate
+from . import models
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -22,14 +23,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-#class Oauthuserserializer , define login et password 
-#create user en utilisant ces donnees et return le user
+class OauthUserSerializer(serializers.Serializer): #recupere le login et l'email
+      login = serializers.CharField()
+      email = serializers.EmailField()
 
-
-
-#class game_stats
-#class tournament_stats
-
+      def create(self, validated_data): #creer un Myuser avec les donnees recuperer
+            user = models.MyUser.objects.create(
+                  username = validated_data['login'],
+                  email = validated_data['email']
+            )
+            return user
 
 
 

@@ -23,14 +23,14 @@ if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 
 
-# CLIENT_ID = os.environ.get("CLIENT_ID")
-# CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+CLIENT_ID = os.environ.get("CLIENT_ID")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER='noreply.4.2.1.2.3@gmail.com'
-EMAIL_HOST_PASSWORD='qyeb ryfn xqfm gqgx'
+EMAIL_HOST_USER=os.environ.get("EMAIL")
+EMAIL_HOST_PASSWORD=os.environ.get("EMAIL_PASSWORD")
 
 
 
@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'oauthlib',
     'requests_oauthlib',
+    'oauth2_provider'
 ]
 
 MIDDLEWARE = [

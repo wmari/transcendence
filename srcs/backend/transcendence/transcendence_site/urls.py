@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from transcendence_site import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -30,7 +30,11 @@ urlpatterns = [
     path('api/tournament/', views.tournament_view, name='tournament'), #path pour recuperer les donnes de fin de tournoi
     path('api/ingame/', views.ingame_view, name='ingame'), #mark the user as ingame
     path('api/not_ingame/', views.not_ingame_view, name='not_ingame'), #mark the user as not ingame
-    path('api/getuserfriendlist/', views.getuserfriendlist_view, name='getuserfriendlist'), #return user friendlist
+	path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), #obtain jwt access and refresh token when user log in
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), #get a new access token using the refresh token, refresh token valid a longer time
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')), # includes the default OAuth2 authentication URLs from the django-oauth-toolkit package
+	path('api/callin/', views.oauth2_login, name='oauth'),  #initiates the OAuth login process by redirecting the user to the OAuth provider’s authorization page.
+	path('api/callback/', views.OauthCallbackView.as_view(), name='callback'), #handles the callback from the OAuth provider after the user approves or denies access.    path('api/getuserfriendlist/', views.getuserfriendlist_view, name='getuserfriendlist'), #return user friendlist
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
