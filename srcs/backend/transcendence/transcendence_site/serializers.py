@@ -70,3 +70,8 @@ class statsSerializer(serializers.Serializer):
 class tournamentSerializer(serializers.Serializer):
 	opponent = serializers.CharField()
 	win = serializers.BooleanField()
+      
+class FriendsSerializer(serializers.ModelSerializer):
+      class Meta:
+            model = MyUser
+            fields = ["username"]

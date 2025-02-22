@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/tournament/', views.tournament_view, name='tournament'), #path pour recuperer les donnes de fin de tournoi
     path('api/ingame/', views.ingame_view, name='ingame'), #mark the user as ingame
     path('api/not_ingame/', views.not_ingame_view, name='not_ingame'), #mark the user as not ingame
-
+    path('api/getuserfriendlist/', views.getuserfriendlist_view, name='getuserfriendlist'), #return user friendlist
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

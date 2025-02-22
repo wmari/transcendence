@@ -3,7 +3,7 @@ from django.contrib import messages
 from .forms import UserRegisterForm
 from rest_framework import generics
 from .models import MyUser, UserStats, GameStats
-from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer, friendSerializer, otpSerializer, statsSerializer, tournamentSerializer
+from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer, friendSerializer, otpSerializer, statsSerializer, tournamentSerializer, FriendsSerializer
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
@@ -46,6 +46,14 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 def get_user(request):
     user = request.user
     return Response({"username": user.username, "email": user.email})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getuserfriendlist_view(request):
+     user = request.user
+     friends = user.friends.all()
+     serializer = FriendsSerializer(friends, many=True)
+     return Response(serializer.data)
 
 # @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
