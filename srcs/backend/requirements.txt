@@ -10,3 +10,4 @@ pyOpenSSL
 oauthlib
 requests_oauthlib
 python-dotenv
+django-oauth-toolkit

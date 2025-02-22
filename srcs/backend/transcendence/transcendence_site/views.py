@@ -3,7 +3,7 @@ from django.contrib import messages
 from .forms import UserRegisterForm
 from rest_framework import generics
 from .models import MyUser, UserStats, GameStats
-from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer, friendSerializer, otpSerializer, statsSerializer, tournamentSerializer
+from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer, friendSerializer, otpSerializer, statsSerializer, tournamentSerializer, OauthUserSerializer
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import AccessToken
@@ -507,7 +507,109 @@ def not_ingame_view(request):
 
 
 
+#Client (Your App) → Requests access to a user’s data.
+#Resource Owner (User) → The person who owns the data.
+#Authorization Server (e.g., 42 API, Google, GitHub) → Verifies the user and grants access.
+#Resource Server → The API that holds the user’s data.
+#Redirect URI (Callback URL) → The endpoint where the OAuth provider sends the user back after login.
 
-#oauth42login
 
-#oauth42get_user
+
+
+
+#user get oauth here and are redirected to the callback view url
+# The backend (or frontend) will make a request to https://api.intra.42.fr/oauth/token with:
+# client_id
+# client_secret
+# code
+# grant_type=authorization_code
+# redirect_uri
+# This will return an access token, which allows authenticated API requests.
+
+
+
+def oauth2_login(request):
+	redirect_url = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-1024c926819a997e5d84bd1ca811be2b87be07a983df8762979fae5ad1c9c3fd&redirect_uri=https%3A%2F%2Flocalhost%3A8000%2Fapi%2Fcallback&response_type=code'
+	return redirect(redirect_url)
+
+
+class OauthCallbackView(APIView):
+	def get(self, request):
+		try:
+			code = request.GET['code'] #get the authorization code sent by 42api, code is exchanged for an access token
+			data    = {
+				'grant_type': 'authorization_code',
+				'client_id': os.getenv('CLIENT_ID'),
+				'client_secret': os.getenv('CLIENT_SECRET'),
+				'code': code,
+				'redirect_uri': 'https://localhost:8000/api/callback',
+			}
+			response = requests.post('https://api.intra.42.fr/oauth/token', data=data) #send a post request to 42api token with the data, exchange the code for an access token
+
+			if response.status_code == 200: 
+				access_token = response.json().get('access_token') #if the response is valid, extract the access token
+
+				user_data_response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'}) #fetch the user data with the access token
+				user_serializer = OauthUserSerializer(data=user_data_response.json()) #recupere le login et l'email dans le serializer
+				if user_serializer.is_valid(): #si les donnees sont valides
+					try:
+						user = MyUser.objects.get(username=user_serializer.validated_data['login']) #check if a user with the same username exist
+						if not user.check_oauth: #check si le user a check oauth
+							return redirect('https://localhost:8000/api/login') #redirect vers le login si il nest pas oauth
+						if user.check_2fa: #si le user a check 2fa
+							otp = generate_otp()
+							user.otp_code = otp
+							user.save()
+							username = user_serializer.validated_data['login']
+							token = AccessToken.for_user(user)
+							encoded_token = str(token)
+							check_2fa = 'True'
+							send_otp_email(user.email, otp)
+							redirect_url = f'https://localhost:8000/api/users?jwtToken={encoded_token}&2fa={check_2fa}&username={username}' #modif redirect vers /home
+							return redirect(redirect_url)
+						else: #sinon log in le user
+							login(request, user)
+							user.check_online = True
+							user.save()
+							username = user_serializer.validated_data['login']
+							check_2fa ='False'
+							token = AccessToken.for_user(user)
+							encoded_token = str(token)
+							redirect_url = f'https://localhost:8000/api/users?jwtToken=e{encoded_token}&2fa={check_2fa}&username={username}'
+							return redirect(redirect_url)
+					except MyUser.DoesNotExist: #si le User nexiste pas, creer le user
+						try:
+							user = MyUser.objects.get(email=user_serializer.validated_data['email']) #check if a user with the same email exists
+							if not user.check_oauth: #si le user na pas check oauth
+								return redirect('https://localhost:8000/api/login')
+						except MyUser.DoesNotExist: #si le user nexiste pas creer un nouveau user
+							user = user_serializer.save()
+							user.check_oauth = True
+							user.check_online = True
+							user.nickname = user.username
+							stat = UserStats.objects.create(user=user)
+							stat.save()
+							user.save()
+							login(request, user)
+							token = AccessToken.for_user(user)
+							encoded_token = str(token)
+							redirect_url = 'https://localhost:8000/api/users?jwtToken={encoded_token}'
+							return redirect(redirect_url)
+				else:
+					return JsonResponse(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
+
+			else:
+				return JsonResponse({"error": response.text}, status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return JsonResponse({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+#check authorization code
+#check oauth response
+#check user data validated with serializer
+#si le user existe deja dans la DB avec son email ou son username :
+# - user existe avec son username et a check oauth true : continue
+# - sinon redirige vers le /api/login
+#si le user a enable 2fa : the otp code is sent and return to /home
+##si le user a disable 2fa : login sans le 2fa et retourne vers /home
+#si le user nest pas trouve par username ou email, creer le user et le login, puis redirige vers le /home
