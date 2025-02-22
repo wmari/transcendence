@@ -74,4 +74,4 @@ class tournamentSerializer(serializers.Serializer):
 class FriendsSerializer(serializers.ModelSerializer):
       class Meta:
             model = MyUser
-            fields = ["username"]
+            fields = ["id", "username"]
