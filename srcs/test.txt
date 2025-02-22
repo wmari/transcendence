@@ -29,6 +29,10 @@
     "password": "test1223123213Tt."
 }
 
+{
+    "username": "try"
+    "password": "Test12345;"
+}
 
 {
     "username": "test2",

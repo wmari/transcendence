@@ -75,12 +75,14 @@ document.addEventListener("DOMContentLoaded", function () {
             profilBtn.classList.remove("d-none");
             gameBtn.classList.remove("d-none");
             tournamentBtn.classList.remove("d-none");
+            fetchFriendList();
         } else {
             loginBtn.classList.remove("d-none");
             logoutBtn.classList.add("d-none");
             profilBtn.classList.add("d-none");
             gameBtn.classList.add("d-none");
             tournamentBtn.classList.add("d-none");
+            hideFriendList();
         }
     }
 
