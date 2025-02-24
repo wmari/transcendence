@@ -1,14 +1,14 @@
-<h2>Mon Profil</h2>
+<!-- <h2>Mon Profil</h2>
 <div class="card">
     <div class="card-body">
         <p><strong>Nom d'utilisateur :</strong> <span id="username"></span></p>
         <p><strong>Email :</strong> <span id="email"></span></p>
         <button class="btn btn-primary" id="editProfileBtn">Modifier</button>
     </div>
-</div>
+</div> -->
 
 <!-- Formulaire de modification (masqué par défaut) -->
-<div class="card mt-3 d-none" id="editProfileForm">
+<!-- <div class="card mt-3 d-none" id="editProfileForm">
     <div class="card-body">
         <form id="profilForm">
             <div class="mb-3">
@@ -25,4 +25,66 @@
     </div>
 </div>
 
-<script src="static/js/profil.js" defer></script>
+<script src="static/js/profil.js" defer></script> -->
+
+<h2>Mon Profil</h2>
+<div class="card">
+  <div class="card-body">
+    <!-- Section Photo de profil -->
+    <div class="text-center mb-4">
+      <div class="position-relative d-inline-block">
+        <img id="profilePicture" src="/static/default-avatar.png" 
+             class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+        <label for="pictureInput" class="btn btn-sm btn-primary position-absolute bottom-0 start-50 translate-middle-x">
+          Changer la photo
+        </label>
+        <input type="file" id="pictureInput" accept="image/*" class="d-none">
+      </div>
+    </div>
+
+    <!-- Informations du profil -->
+    <div id="profileInfo">
+      <p><strong>Nickname :</strong> <span id="nickname"></span></p>
+      <p><strong>Email :</strong> <span id="email"></span></p>
+      <button class="btn btn-primary" id="editProfileBtn">Modifier le profil</button>
+      <button class="btn btn-warning" id="editPasswordBtn">Changer le mot de passe</button>
+      <button class="btn btn-secondary" id="twoFactorBtn">2FA</button>
+    </div>
+
+    <!-- Formulaire de modification du profil -->
+    <div id="editProfileForm" class="d-none">
+      <form id="profileForm">
+        <div class="mb-3">
+          <label for="newNickname" class="form-label">Nouveau nickname</label>
+          <input type="text" class="form-control" id="newNickname">
+        </div>
+        <div class="mb-3">
+          <label for="newEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="newEmail" disabled>
+        </div>
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <button type="button" class="btn btn-secondary" id="cancelEdit">Annuler</button>
+      </form>
+    </div>
+
+    <!-- Formulaire de modification du mot de passe -->
+    <div id="editPasswordForm" class="d-none">
+      <form id="passwordForm">
+        <div class="mb-3">
+          <label for="currentPassword" class="form-label">Mot de passe actuel</label>
+          <input type="password" class="form-control" id="currentPassword" required>
+        </div>
+        <div class="mb-3">
+          <label for="newPassword" class="form-label">Nouveau mot de passe</label>
+          <input type="password" class="form-control" id="newPassword" required>
+        </div>
+        <div class="mb-3">
+          <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+          <input type="password" class="form-control" id="confirmPassword" required>
+        </div>
+        <button type="submit" class="btn btn-success">Changer le mot de passe</button>
+        <button type="button" class="btn btn-secondary" id="cancelPassword">Annuler</button>
+      </form>
+    </div>
+  </div>
+</div>
