@@ -70,7 +70,6 @@
 // });
 
 document.addEventListener("profilEvent", function() {
-    // Éléments du DOM
     const profilePicture = document.getElementById("profilePicture");
     const pictureInput = document.getElementById("pictureInput");
     const nicknameSpan = document.getElementById("nickname");
@@ -105,7 +104,7 @@ document.addEventListener("profilEvent", function() {
             if (data.profil_picture) {
                 profilePicture.src = data.profil_picture;
             }
-            twoFactorBtn.textContent = data.check_2fa ? "Désactiver 2FA" : "Activer 2FA";
+            // twoFactorBtn.textContent = data.check_2fa ? "Désactiver 2FA" : "Activer 2FA";
             
             document.getElementById("newNickname").value = data.nickname || data.username;
             document.getElementById("newEmail").value = data.email;
@@ -246,6 +245,5 @@ document.addEventListener("profilEvent", function() {
         return alert;
     }
 
-    // Charger le profil au démarrage
     loadProfile();
 });

@@ -48,7 +48,6 @@
       <p><strong>Email :</strong> <span id="email"></span></p>
       <button class="btn btn-primary" id="editProfileBtn">Modifier le profil</button>
       <button class="btn btn-warning" id="editPasswordBtn">Changer le mot de passe</button>
-      <button class="btn btn-secondary" id="twoFactorBtn">2FA</button>
     </div>
 
     <!-- Formulaire de modification du profil -->
@@ -88,3 +87,71 @@
     </div>
   </div>
 </div>
+<h2>Mes Statistiques</h2>
+<div class="card mb-4">
+  <div class="card-body">
+    <!-- Résumé des stats -->
+    <div class="row text-center mb-4">
+      <div class="col-md-3">
+        <div class="stats-box p-3 bg-light rounded">
+          <h4 id="totalGames">0</h4>
+          <p>Parties jouées</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-box p-3 bg-success text-white rounded">
+          <h4 id="totalWins">0</h4>
+          <p>Victoires</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-box p-3 bg-danger text-white rounded">
+          <h4 id="totalDefeats">0</h4>
+          <p>Défaites</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-box p-3 bg-primary text-white rounded">
+          <h4 id="winPercentage">0%</h4>
+          <p>Taux de victoire</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Graphique performance -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <h5>Performance</h5>
+        <canvas id="performanceChart" height="200"></canvas>
+      </div>
+    </div>
+    
+    <!-- Historique des parties -->
+    <div class="row">
+      <div class="col-12">
+        <h5>Historique des Parties</h5>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Adversaire</th>
+                <th>Score</th>
+                <th>Résultat</th>
+              </tr>
+            </thead>
+            <tbody id="gameHistoryBody">
+              <!-- L'historique sera inséré ici par JavaScript -->
+            </tbody>
+          </table>
+        </div>
+        <div id="paginationControls" class="d-flex justify-content-center">
+          <!-- Contrôles de pagination -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Inclure Chart.js pour les graphiques -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
