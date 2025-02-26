@@ -1,7 +1,7 @@
+console.log("Mode Multijoueur chargé !");
+startGameMulti()
+
 function startGameMulti() {
-
-
-
 
     // define elements
     const score1Element = document.getElementById('score1');
