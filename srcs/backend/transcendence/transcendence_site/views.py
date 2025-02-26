@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from .forms import UserRegisterForm
 from rest_framework import generics
 from .models import MyUser, UserStats, GameStats
-from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer, friendSerializer, otpSerializer, statsSerializer, tournamentSerializer, FriendsSerializer, OauthUserSerializer
+from .serializers import UserSerializer, nicknameSerializer, registerSerializer, loginSerializer, friendSerializer, otpSerializer, statsSerializer, tournamentSerializer, FriendsSerializer, OauthUserSerializer, PasswordModifSerializer
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
@@ -159,7 +160,32 @@ def register_view(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+     try:
+          serializer = PasswordModifSerializer(data = request.data)
+          if serializer.is_valid():
+                data = serializer.validated_data
+                currpass = data['current_password']
+                newpass = data['new_password']
+                user = request.user
+                if not currpass or not newpass:
+                    return JsonResponse({"error": "Tous les champs sont obligatoires."}, status=status.HTTP_400_BAD_REQUEST)
+                if not user.check_password(currpass):
+                    return JsonResponse({"error": "Ancien mot de passe incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+                user.set_password(newpass)
+                user.save()
+                update_session_auth_hash(request, user)
+                return JsonResponse({"message": "password modifié avec succès !"}, status=status.HTTP_200_OK)
+          else:
+               return JsonResponse({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+     except Exception as e:
+          return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+                
+
+                
 
 @api_view(['POST'])
 def login_view(request):
@@ -305,6 +331,7 @@ def uploadpp(request):
         return JsonResponse({"message": "Photo de profil mise à jour avec succès."}, status=status.HTTP_200_OK)
     else: #si la méthode n'est pas POST ou si aucun fichier n'est envoyé
         return JsonResponse({"error": "Méthode non autorisée ou Pas d'image envoye"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -613,6 +640,11 @@ class OauthCallbackView(APIView):
 				return JsonResponse({"error": response.text}, status=status.HTTP_400_BAD_REQUEST)
 		except Exception as e:
 			return JsonResponse({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+          
+
+
+
+     
 
 
 #check authorization code

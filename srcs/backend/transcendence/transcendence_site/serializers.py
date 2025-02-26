@@ -78,3 +78,7 @@ class FriendsSerializer(serializers.ModelSerializer):
       class Meta:
             model = MyUser
             fields = ["id", "username"]
+
+class PasswordModifSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)

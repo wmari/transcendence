@@ -181,7 +181,8 @@ document.addEventListener("profilEvent", function() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token}`,
+                "X-CSRFToken": getCookie("csrftoken"), // Fetch CSRF token from cookies
             },
             body: JSON.stringify({
                 current_password: currentPassword,
