@@ -137,7 +137,7 @@ document.addEventListener("profilEvent", function() {
             })
             .then(response => response.json())
             .then(data => {
-                profilePicture.src = data.profil_picture;
+                profilePicture.src = data.profil_picture_url;
                 showSuccess("Photo de profil mise à jour!");
             })
             .catch(() => {

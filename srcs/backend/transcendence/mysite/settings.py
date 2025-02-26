@@ -178,7 +178,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT ='/static/'
 
 
-from pathlib import Path
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'

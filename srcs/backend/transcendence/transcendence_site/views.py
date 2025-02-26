@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from django.conf import settings
 from .forms import UserRegisterForm
 from rest_framework import generics
 from .models import MyUser, UserStats, GameStats
@@ -21,6 +22,7 @@ import random #importer le module random
 from .utils import generate_otp_code, send_otp_email #importer les fonctions generate_otp et send_otp_email
 import requests, os, re, random, string  #importer les modules
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 
@@ -324,14 +326,33 @@ def check_otp_view(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@permission_classes([MultiPartParser, FormParser])
 def uploadpp(request):
-    if request.FILES.get('profil_picture'): #vérifier si la méthode est POST et si un fichier est envoyé
-        user = request.user #récupérer l'utilisateur
-        user.profil_picture = request.FILES.get('profil_picture') #modifier la photo de profil de l'utilisateur
-        user.save() #sauvegarder les modifications
-        return JsonResponse({"message": "Photo de profil mise à jour avec succès."}, status=status.HTTP_200_OK)
-    else: #si la méthode n'est pas POST ou si aucun fichier n'est envoyé
-        return JsonResponse({"error": "Méthode non autorisée ou Pas d'image envoye"}, status=status.HTTP_400_BAD_REQUEST)
+     user = request.user
+
+     if "profil_picture" not in request.FILES:
+          return JsonResponse({"error": "Aucune image"}, status=status.HTTP_400_BAD_REQUEST)
+     
+     image = request.FILES["profil_picture"]
+
+     if user.profil_picture:
+          old_image_path = os.path.join(settings.MEDIA_ROOT, str(user.profil_picture))
+          if os.path.exists(old_image_path):
+               os.remove(old_image_path)
+     user.profil_picture = image
+     user.save()
+
+     return JsonResponse({
+          "message": "Profil picture mis a jour !",
+          "profil_picture_url": user.profil_picture.url
+          }, status=status.HTTP_200_OK)
+    # if request.FILES.get('profil_picture'): #vérifier si la méthode est POST et si un fichier est envoyé
+    #     user = request.user #récupérer l'utilisateur
+    #     user.profil_picture = request.FILES.get('profil_picture') #modifier la photo de profil de l'utilisateur
+    #     user.save() #sauvegarder les modifications
+    #     return JsonResponse({"message": "Photo de profil mise à jour avec succès."}, status=status.HTTP_200_OK)
+    # else: #si la méthode n'est pas POST ou si aucun fichier n'est envoyé
+    #     return JsonResponse({"error": "Méthode non autorisée ou Pas d'image envoye"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -351,7 +372,7 @@ class profilView(APIView):
 							'nickname': friend.nickname,
 							'ingame': friend.check_ingame,
 							'online': friend.check_online,
-							'profil_picrture': friend.profil_picture.url,
+							'profil_picrture': friend.profil_picture.url if friend.profil_picture else None,
                         })
                 game_list = []  #liste game vide
                 if user.games.all().count() > 0: #si au moins une game
@@ -374,7 +395,11 @@ class profilView(APIView):
 					'username': user.username,
                     'nickname': user.nickname,
 					'email': user.email,
-					'profil_picture': user.profil_picture.url,
+					'profil_picture': (
+                              request.build_absolute_uri(user.profil_picture.url)
+                              if user.profil_picture
+                              else request.build_absolute_uri(settings.MEDIA_URL + "PPicture/default.jpg")
+                            ),
 					'number_of_game': stat.number_of_game,
 					'number_of_win': stat.number_of_win,
 					'number_of_defeat': stat.number_of_defeat,
