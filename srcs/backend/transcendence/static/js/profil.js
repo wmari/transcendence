@@ -94,7 +94,7 @@ document.addEventListener("profilEvent", function() {
 
     // Charger les infos du profil
     function loadProfile() {
-        fetch("/api/user/", {
+        fetch("/api/profil/", {
             headers: { "Authorization": `Bearer ${token}` }
         })
         .then(response => response.json())
@@ -124,7 +124,8 @@ document.addEventListener("profilEvent", function() {
             fetch("/api/uploadpp/", {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${token}`
+                    "Authorization": `Bearer ${token}`,
+                    "X-CSRFToken": getCookie("csrftoken"), // Fetch CSRF token from cookies
                 },
                 body: formData
             })
@@ -247,3 +248,18 @@ document.addEventListener("profilEvent", function() {
 
     loadProfile();
 });
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
