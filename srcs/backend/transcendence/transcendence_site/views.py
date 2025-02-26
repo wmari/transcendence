@@ -92,6 +92,7 @@ def remove_friend(request, friend_id):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def modif_nickname(request):    #modifier le nickname
     try:
         serializer = nicknameSerializer(data=request.data)  #créer une instance de nicknameSerializer avec les données de la requête
@@ -370,7 +371,8 @@ class profilView(APIView):
 								'date': game.date,
                             })
                 data = { #creer un dictionnaire avec les data du user logged in
-					'nickname': user.nickname,
+					'username': user.username,
+                    'nickname': user.nickname,
 					'email': user.email,
 					'profil_picture': user.profil_picture.url,
 					'number_of_game': stat.number_of_game,

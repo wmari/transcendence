@@ -97,8 +97,14 @@ document.addEventListener("profilEvent", function() {
         fetch("/api/profil/", {
             headers: { "Authorization": `Bearer ${token}` }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok){
+                return response.json().then(err => {throw err;});
+            }
+            return response.json();
+        })
         .then(data => {
+            data = data.data;
             nicknameSpan.textContent = data.nickname || data.username;
             emailSpan.textContent = data.email;
             if (data.profil_picture) {
@@ -149,7 +155,8 @@ document.addEventListener("profilEvent", function() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token}`,
+                "X-CSRFToken": getCookie("csrftoken"), // Fetch CSRF token from cookies
             },
             body: JSON.stringify({ nickname: newNickname })
         })
