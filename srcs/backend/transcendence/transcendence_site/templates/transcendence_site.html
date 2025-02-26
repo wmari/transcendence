@@ -24,6 +24,7 @@
                 </ul>
                 <ul class="navbar-nav ms-auto">
                   <li class="nav-item">
+                      <button id="registerBtn" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
                       <button id="loginBtn" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
                       <button id="logoutBtn" class="btn btn-danger d-none">Logout</button>
                   </li>
@@ -52,6 +53,40 @@
               </div>
             </form>
             <p id="loginError" class="text-danger mt-2 d-none">Identifiants incorrects.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="registerModalLabel">Inscription</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="registerForm">
+              <div class="mb-3">
+                <label for="reg_username" class="form-label">Nom d'utilisateur</label>
+                <input type="text" class="form-control" id="reg_username" name="reg_username" required>
+              </div>
+              <div class="mb-3">
+                <label for="reg_email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="reg_email" name="reg_email" required>
+              </div>
+              <div class="mb-3">
+                <label for="reg_password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" id="reg_password" name="reg_password" required>
+              </div>
+              <div class="mb-3">
+                <label for="reg_password_confirm" class="form-label">Confirmer le mot de passe</label>
+                <input type="password" class="form-control" id="reg_password_confirm" name="reg_password_confirm" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+              </div>
+            </form>
+            <p id="registerError" class="text-danger mt-2 d-none">Erreur lors de l'inscription.</p>
+            <p id="registerSuccess" class="text-success mt-2 d-none">Inscription réussie. Vous pouvez maintenant vous connecter.</p>
           </div>
         </div>
       </div>
