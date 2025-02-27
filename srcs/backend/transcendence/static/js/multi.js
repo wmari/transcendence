@@ -1,7 +1,12 @@
 console.log("Mode Multijoueur chargé !");
+
+
 startGameMulti()
 
 function startGameMulti() {
+
+    document.getElementById("game").style.display = "block";
+    document.getElementById("loadingMessage").style.display = "none";
 
     // define elements
     const score1Element = document.getElementById('score1');
@@ -56,7 +61,7 @@ function startGameMulti() {
     let score2 = 0;
     let player1 = "Player1";
     let player2 = "Player2";
-    let winner = 7;
+    let winner = 5;
 
     // define key
     var KEYDOWN = "KeyS", KEYUP = "KeyW", 
@@ -445,36 +450,36 @@ function startGameMulti() {
         win = false;
         }
 
-        let data = {
-        'opponent': 'random',
-        'win': win,
-        'my_score': score1,
-        'opponent_score': score2,
-        };
+        // let data = {
+        // 'opponent': 'random',
+        // 'win': win,
+        // 'my_score': score1,
+        // 'opponent_score': score2,
+        // };
 
-        (async () => {
-        try {
-            let csrfToken = await getCSRFToken(); //appelle la focntion getCSRF
-            let jwtToken = localStorage.getItem('jwtToken'); //recupere le jwt token
-            const response = await fetch('/api/game_end/', { //post request to game_end_view
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`,
-                'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify(data), //send the data as a json string
-            });
+        // (async () => {
+        // try {
+        //     let csrfToken = await getCSRFToken(); //appelle la focntion getCSRF
+        //     let jwtToken = localStorage.getItem('jwtToken'); //recupere le jwt token
+        //     const response = await fetch('/api/game_end/', { //post request to game_end_view
+        //     method: 'POST',
+        //     headers: {
+        //         'Authorization': `Bearer ${jwtToken}`,
+        //         'X-CSRFToken': csrfToken,
+        //         'Content-Type': 'application/json',
+        //     },
+        //     credentials: 'include',
+        //     body: JSON.stringify(data), //send the data as a json string
+        //     });
 
-            const respdata = await response.json(); //la reponse est converti en json
-            if (!response.ok)
-            console.error(respdata.error);
-        } catch (error) {
-            console.error('Error during fetching:', error);
-        }
-        })();
-        return;
+        //     const respdata = await response.json(); //la reponse est converti en json
+        //     if (!response.ok)
+        //     console.error(respdata.error);
+        // } catch (error) {
+        //     console.error('Error during fetching:', error);
+        // }
+        // })();
+        // return;
 
     }
     requestAnimationFrame(update);

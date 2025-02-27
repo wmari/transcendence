@@ -63,7 +63,7 @@ function startGameSolo() {
 	let score2 = 0;
 	let player1 = "Player";
 	let player2 = "CPU";
-	let winner = 7;
+	let winner = 5;
 
 	// Movement management
 	var KEYDOWN = "KeyS", KEYUP = "KeyW", 
