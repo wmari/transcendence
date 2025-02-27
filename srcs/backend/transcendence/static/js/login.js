@@ -68,24 +68,47 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Modification à apporter à votre fonction updateUI dans login.js
+// Remplacez la fonction updateUI existante par celle-ci:
+
     function updateUI(isLoggedIn) {
+        const registerBtn = document.getElementById("registerBtn");
+        const friendsButtonContainer = document.getElementById("friendsButtonContainer");
+    
         if (isLoggedIn) {
             loginBtn.classList.add("d-none");
-            logoutBtn.classList.remove("d-none");
-            registerBtn.classList.add("d-none");  
+            registerBtn.classList.add("d-none");
+            logoutBtn.classList.remove("d-none");   
             profilBtn.classList.remove("d-none");
             gameBtn.classList.remove("d-none");
             tournamentBtn.classList.remove("d-none");
+        
+            // Afficher la friend list quand on est connecté
+            if (friendsButtonContainer) {
+                friendsButtonContainer.classList.remove("d-none");
+                // Si une fonction loadFriendsList existe (définie dans friendslist.js)
+                if (typeof window.loadFriendsList === 'function') {
+                    window.loadFriendsList();
+                }
+            }
         } else {
             loginBtn.classList.remove("d-none");
-            logoutBtn.classList.add("d-none");
             registerBtn.classList.remove("d-none");
+            logoutBtn.classList.add("d-none");
             profilBtn.classList.add("d-none");
             gameBtn.classList.add("d-none");
             tournamentBtn.classList.add("d-none");
+        
+            // Cacher la friend list quand on est déconnecté
+            if (friendsButtonContainer) {
+                friendsButtonContainer.classList.add("d-none");
+                const friendsSidebar = document.getElementById("friendsSidebar");
+                if (friendsSidebar) {
+                    friendsSidebar.classList.add("d-none");
+                }
+            }
         }
     }
-
     // rend checkLoginStatus global
     window.checkLoginStatus = checkLoginStatus;
     window.updateUI = updateUI;
