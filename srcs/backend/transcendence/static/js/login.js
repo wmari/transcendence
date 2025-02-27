@@ -71,13 +71,15 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateUI(isLoggedIn) {
         if (isLoggedIn) {
             loginBtn.classList.add("d-none");
-            logoutBtn.classList.remove("d-none");   
+            logoutBtn.classList.remove("d-none");
+            registerBtn.classList.add("d-none");  
             profilBtn.classList.remove("d-none");
             gameBtn.classList.remove("d-none");
             tournamentBtn.classList.remove("d-none");
         } else {
             loginBtn.classList.remove("d-none");
             logoutBtn.classList.add("d-none");
+            registerBtn.classList.remove("d-none");
             profilBtn.classList.add("d-none");
             gameBtn.classList.add("d-none");
             tournamentBtn.classList.add("d-none");
