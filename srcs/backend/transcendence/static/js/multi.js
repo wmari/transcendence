@@ -107,6 +107,24 @@ function startGameMulti() {
     }
 
 
+
+    // function startCountdown(callback) {
+    //     countdownElement.style.display = 'block';
+        
+    //     function countdownStep(count) {
+    //         if (count > 0) {
+    //             countdownElement.textContent = `Starting in ${count}`;
+    //             setTimeout(() => countdownStep(count - 1), 1000);
+    //         } else {
+    //             countdownElement.style.display = 'none';
+    //             callback();
+    //         }
+    //     }
+        
+    //     countdownStep(3);
+    // }
+    
+
     //renderer/camera/scene
 
     renderer = new THREE.WebGLRenderer({ alpha: true});
