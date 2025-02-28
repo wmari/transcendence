@@ -45,8 +45,8 @@ function startGameMulti() {
 
     // define ball
     const RADIUS = 5;
-    const SEGMENTS = 16;
-    const RINGS = 16;
+    const SEGMENTS = 8;
+    const RINGS = 8;
 
     // define border
     const barrierThickness = 2;
@@ -109,7 +109,8 @@ function startGameMulti() {
 
     //renderer/camera/scene
 
-    renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer = new THREE.WebGLRenderer({ alpha: true});
+
 
     camera = new THREE.PerspectiveCamera(
     VIEW_ANGLE,
@@ -278,6 +279,19 @@ function startGameMulti() {
         ballDirZ = -ballSpeed * 2;
     }
     }
+
+    // function ballMovement() {
+    //     ball.position.x += ballDirX * ballSpeed;
+    //     ball.position.z += ballDirZ * ballSpeed;
+    
+    //     if (Math.abs(ball.position.z) >= fieldHeight / 2 - RADIUS) {
+    //         ballDirZ = -ballDirZ;
+    //     }
+    
+    //     ballDirZ = Math.max(-ballSpeed * 2, Math.min(ballDirZ, ballSpeed * 2));
+    // }
+
+
 
     function paddelCollide() {
 
