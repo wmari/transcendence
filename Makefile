@@ -1,5 +1,5 @@
 all: 
-	mkdir -p /home/$(USERNAME)/data/postgresql
+	mkdir -p /home/$(USER)/data/postgresql
 	docker compose -f ./srcs/docker-compose.yml build
 	docker compose -f ./srcs/docker-compose.yml up -d
 
@@ -13,7 +13,7 @@ clean:
 	docker system prune -af
 
 fclean: clean
-	@sudo rm -rf /home/$(USER)/data/postgresql
+	docker volume rm srcs_postgresql
 	@docker system prune -af
 
 rebuild:

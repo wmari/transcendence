@@ -41,11 +41,6 @@ services:
 
 volumes:
   postgresql:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/home/${USERNAME}/data/postgresql'
 
 networks:
   mynetwork:
