@@ -327,8 +327,17 @@ function startGameSolo() {
 		ball.position.z += ballDirZ * ballSpeed;
 
 		// if ball hits the top or bottom barrier
-		if (ball.position.z <= -fieldHeight / 2 + RADIUS || ball.position.z >= fieldHeight / 2 - RADIUS) {
-			ballDirZ = -ballDirZ;
+		// if (ball.position.z <= -fieldHeight / 2 + RADIUS || ball.position.z >= fieldHeight / 2 - RADIUS) {
+		// 	ballDirZ = -ballDirZ;
+		// }
+
+		if (ball.position.z <= -fieldHeight / 2 + RADIUS) {
+			ball.position.z = -fieldHeight / 2 + RADIUS + 1; // Push it back slightly
+			ballDirZ = Math.abs(ballDirZ); // Ensure it moves away
+		}
+		if (ball.position.z >= fieldHeight / 2 - RADIUS) {
+			ball.position.z = fieldHeight / 2 - RADIUS - 1; // Push it back slightly
+			ballDirZ = -Math.abs(ballDirZ); // Ensure it moves away
 		}
 
 		// limit ball's z-speed to 2x the x-speed
@@ -351,6 +360,9 @@ function startGameSolo() {
 					let impactPoint = (ball.position.z - paddle1.position.z) / (paddleDepth / 2);
 					ballDirZ = impactPoint * ballSpeed / 1.5;
 					ballSpeed += 0.2;
+					if (Math.abs(ballDirZ) < 0.5) { 
+						ballDirZ = ballDirZ > 0 ? 0.5 : -0.5;
+					}
 				}
 			}
 		}
@@ -366,6 +378,9 @@ function startGameSolo() {
 					let impactPoint = (ball.position.z - paddle2.position.z) / (paddleDepth / 2);
 					ballDirZ = impactPoint * ballSpeed / 1.5;
 					ballSpeed += 0.2;
+					if (Math.abs(ballDirZ) < 0.5) { 
+						ballDirZ = ballDirZ > 0 ? 0.5 : -0.5;
+					}
 				}
 			}
 		}
@@ -591,4 +606,3 @@ function startGameSolo() {
 		update();
 	});
 }
-
