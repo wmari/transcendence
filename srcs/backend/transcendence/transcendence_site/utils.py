@@ -16,6 +16,6 @@ def generate_otp_code():
 def send_otp_email(email, otp_code):
 	subject = 'Transcendence - Two Factor Authentication'
 	message = f'Your OTP code is {otp_code}.'
-	from_email = 'trans4242123@hotmail.com'
+	from_email = 'noreply.4.2.1.2.3@gmail.com'
 	recipient_list = [email] #envoyer un email avec le code otp
 	send_mail(subject, message, from_email, recipient_list) #envoyer un email avec le code otp
