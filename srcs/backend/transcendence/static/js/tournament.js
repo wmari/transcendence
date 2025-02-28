@@ -197,7 +197,7 @@ function startTournament() {
 		const paddleWidth = 10, paddleHeight = 10;
 		const paddleDepth = 50, paddleQuality = 1;
 		let paddle1DirZ = 0, paddle2DirZ = 0, paddleSpeed = 2;
-		let ballDirX = -1, ballDirZ = 1, ballSpeed = 1;
+		let ballDirX = -1, ballDirZ = 1, ballSpeed = 2;
 
 		//score management
 		let score1 = 0;
@@ -436,7 +436,7 @@ function startTournament() {
 						// Calculer la nouvelle direction Z
 						let impactPoint = (ball.position.z - paddle1.position.z) / (paddleDepth / 2);
 						ballDirZ = impactPoint * ballSpeed / 1.5;
-            ballSpeed += 0.1; // Increase ball speed after collision with paddle1
+            			ballSpeed += 0.2; // Increase ball speed after collision with paddle1
 					}
 				}
 			}
@@ -451,7 +451,7 @@ function startTournament() {
 						// Calculer la nouvelle direction Z
 						let impactPoint = (ball.position.z - paddle2.position.z) / (paddleDepth / 2);
 						ballDirZ = impactPoint * ballSpeed / 1.5;
-            ballSpeed += 0.1; // Increase ball speed after collision with paddle2
+            			ballSpeed += 0.2; // Increase ball speed after collision with paddle2
 					}
 				}
 			}
@@ -559,7 +559,7 @@ function startTournament() {
 			setTimeout(() => {
 				ballDirX = (score1 > score2) ? -1 : 1;
 				ballDirZ = Math.random() * 2 - 1;
-				ballSpeed = 1;
+				ballSpeed = 2;
 			}, 2000); 
 		}
 

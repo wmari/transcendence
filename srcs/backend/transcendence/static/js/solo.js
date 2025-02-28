@@ -350,7 +350,7 @@ function startGameSolo() {
 					// Calculer la nouvelle direction Z
 					let impactPoint = (ball.position.z - paddle1.position.z) / (paddleDepth / 2);
 					ballDirZ = impactPoint * ballSpeed / 1.5;
-					ballSpeed += 0.1;
+					ballSpeed += 0.2;
 				}
 			}
 		}
@@ -365,7 +365,7 @@ function startGameSolo() {
 					// Calculer la nouvelle direction Z
 					let impactPoint = (ball.position.z - paddle2.position.z) / (paddleDepth / 2);
 					ballDirZ = impactPoint * ballSpeed / 1.5;
-					ballSpeed += 0.1;
+					ballSpeed += 0.2;
 				}
 			}
 		}

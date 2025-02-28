@@ -290,7 +290,7 @@ function startGameMulti() {
             ballDirX = -ballDirX;
             let impactPoint = (ball.position.z - paddle1.position.z) / (paddleDepth / 2);
             ballDirZ = impactPoint * ballSpeed / 1.5;
-            ballSpeed += 0.1; // Increase ball speed after collision with paddle1
+            ballSpeed += 0.2; // Increase ball speed after collision with paddle1
         }
         }
     }
@@ -304,7 +304,7 @@ function startGameMulti() {
             ballDirX = -ballDirX;
             let impactPoint = (ball.position.z - paddle2.position.z) / (paddleDepth / 2);
             ballDirZ = impactPoint * ballSpeed / 1.5;
-            ballSpeed += 0.1; // Increase ball speed after collision with paddle2
+            ballSpeed += 0.2; // Increase ball speed after collision with paddle2
         }
         }
     }

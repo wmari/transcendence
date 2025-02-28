@@ -14,8 +14,8 @@
 {
     "username": "test2",
     "email": "naver1@hotmail.fr",
-    "password1": "test1223123213Tt.",
-    "password2": "test1223123213Tt."
+    "password1": "3001200Ss.",
+    "password2": "3001200Ss."
 }
 
 
