@@ -1,9 +1,19 @@
+console.log("Mode solo chargé !");
+
+
 
 startGameSolo();
 
 
+
 function startGameSolo() {
-	
+
+    document.getElementById("game").style.display = "block";
+    document.getElementById("loadingMessage").style.display = "none";
+    document.getElementById("soloBtn").style.display = "none";
+    document.getElementById("multiBtn").style.display = "none";
+
+
 	// ------------------------------- //
 	// ---------- COUNTDOWN ---------- //
 	// ------------------------------- //
@@ -63,7 +73,7 @@ function startGameSolo() {
 	let score2 = 0;
 	let player1 = "Player";
 	let player2 = "CPU";
-	let winner = 5;
+	let winner = 7;
 
 	// Movement management
 	var KEYDOWN = "KeyS", KEYUP = "KeyW", 

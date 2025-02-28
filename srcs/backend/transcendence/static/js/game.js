@@ -2,10 +2,14 @@ document.addEventListener("gameEvent", function(){
     console.log("Game page chargée");
 
     document.getElementById("soloBtn").addEventListener("click", function (){
+        this.style.display = "none";  // Hide solo button
+        document.getElementById("multiBtn").style.display = "none";  // Hide multiplayer button
         startGame("solo");
     });
 
     document.getElementById("multiBtn").addEventListener("click", function () {
+        this.style.display = "none";  // Hide solo button
+        document.getElementById("soloBtn").style.display = "none";  // Hide multiplayer button
         startGame("multi");
     });
 });
@@ -18,6 +22,7 @@ function startGame(mode){
 
     const script = document.createElement("script");
     script.src = `static/js/${mode}.js`;
+    console.log(`start script ${mode}`);
     script.defer = true;
 
     document.querySelectorAll("script[data-game]").forEach(s => s.remove());

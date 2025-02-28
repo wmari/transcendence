@@ -1,12 +1,17 @@
 console.log("Mode Multijoueur chargé !");
 
 
+
 startGameMulti()
 
 function startGameMulti() {
+    
 
     document.getElementById("game").style.display = "block";
     document.getElementById("loadingMessage").style.display = "none";
+    document.getElementById("soloBtn").style.display = "none";
+    document.getElementById("multiBtn").style.display = "none";
+
 
     // define elements
     const score1Element = document.getElementById('score1');
@@ -54,14 +59,14 @@ function startGameMulti() {
     const paddleWidth = 10, paddleHeight = 10;
     const paddleDepth = 50, paddleQuality = 1;
     let paddle1DirZ = 0, paddle2DirZ = 0, paddleSpeed = 2;
-    let ballDirX = -1, ballDirZ = 1, ballSpeed = 1;
+    let ballDirX = -1, ballDirZ = 1, ballSpeed = 2;
 
     //define score
     let score1 = 0;
     let score2 = 0;
     let player1 = "Player1";
     let player2 = "Player2";
-    let winner = 5;
+    let winner = 7;
 
     // define key
     var KEYDOWN = "KeyS", KEYUP = "KeyW", 
@@ -402,7 +407,7 @@ function startGameMulti() {
     setTimeout(() => {
         ballDirX = (score1 > score2) ? -1 : 1;
         ballDirZ = Math.random() * 2 - 1;
-        ballSpeed = 1;
+        ballSpeed = 2;
     }, 2000); 
     }
 

@@ -1,4 +1,18 @@
+
+
+startTournament();
+
+
+
 function startTournament() {
+
+
+    document.getElementById("tournament").style.display = "block";
+    document.getElementById("tournamentTitle").style.display = "none";
+    document.getElementById("tournamentDescription").style.display = "none";
+
+
+
 
 	let winner1 = ""; //variable winner round1
 	let winner2 = ""; //variable winner round2

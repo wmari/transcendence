@@ -1,6 +1,5 @@
-<h1>Tournoi</h1>
-<p>Organise des tournois et affronte d’autres joueurs.</p>
-<button class="btn btn-secondary" onclick="navigate('home')">Retour à l'accueil</button>
+<h1 id="tournamentTitle">Tournoi</h1>
+<p id="tournamentDescription">Organise des tournois et affronte d'autres joueurs.</p>
 
 
 <div id="playerForm" class="centered-div">
@@ -22,25 +21,27 @@
                 <label for="player4">Joueur 4:</label>
                 <input type="text" id="player4" placeholder="Nom du Joueur 4" required>
             </div>
-            <p>Player 1 is the connected user</p>
-            <button class="btn" id="startTournament" onclick="startTournament()">Commencer le Tournoi</button>
+            <p><strong>Player 1 is the connected user</strong></p>
+            <button class="btn btn-secondary" id="startTournament" onclick="startTournament()">Commencer le Tournoi</button>
             <div id="login-status" class="col text-center"></div>
         </div>
     </div>
 </div>
-<div id="gameContainer" style="padding-top: 200px;">
-    <div id="countdown">Starting in 3</div>
-    <div id="scoreboard">
-        <div id="score1">0</div>
-        <div id="score2">0</div>
+<div id="tournament" style="display: none;">
+    <div id="gameContainer" class="mt-4">
+        <div id="countdown">Starting in 3</div>
+        <div id="scoreboard">
+            <div id="score1">0</div>
+            <div id="score2">0</div>
+        </div>
+        <div id="playerNames">
+            <div id="playerA"></div>
+            <div id="playerB"></div>
+        </div>
+        <div id="gameCanvas"></div>
+        <div>
+            <p id="winScreen"></p>
+        </div>
+        <div id="rule">First to 3 Wins</div>
     </div>
-    <div id="playerNames">
-        <div id="playerA"></div>
-        <div id="playerB"></div>
-    </div>
-    <div id="gameCanvas"></div>
-    <div>
-        <p id="winScreen"></p>
-    </div>
-    <div id="rule">First to 3 Wins</div>
 </div>
